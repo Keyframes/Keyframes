@@ -1,11 +1,12 @@
 {
-  "name": "keyframes",
-  "version": "1.0.0",
+  "name": "@keyframes/core",
+  "version": "1.0.1",
   "description": "Keyframes allows dynamic generation of CSS3 keyframes with callback events and other niceness.",
   "main": "dist/keyframes.min.js",
   "scripts": {
-    "build": "npx babel src -d dist && npm run minify",
-    "minify": "uglifyjs --compress --mangle -- dist/keyframes.js > dist/keyframes.min.js"
+    "build": "npx babel src -d dist --no-comments && npm run minify",
+    "minify": "uglifyjs --compress --mangle -- dist/keyframes.js > dist/keyframes.min.js",
+    "publish": "npm run build && npm publish"
   },
   "repository": {
     "type": "git",

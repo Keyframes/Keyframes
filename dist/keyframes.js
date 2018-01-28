@@ -4,9 +4,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var Keyframes =
-/*#__PURE__*/
-function () {
+var Keyframes = function () {
   function Keyframes(elem) {
     _classCallCheck(this, Keyframes);
 
@@ -124,7 +122,7 @@ function () {
       if (frameStyle) {
         frameStyle.innerHTML = css;
       } else {
-        this.createKeyframeTag(frameName, css);
+        Keyframes.createKeyframeTag(frameName, css);
       }
     }
   }, {

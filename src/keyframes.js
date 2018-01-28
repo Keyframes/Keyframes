@@ -110,7 +110,7 @@ class Keyframes { // eslint-disable-line
         if (frameStyle) {
             frameStyle.innerHTML = css;
         } else {
-            this.createKeyframeTag(frameName, css);
+            Keyframes.createKeyframeTag(frameName, css);
         }
     }
 
