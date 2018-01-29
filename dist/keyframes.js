@@ -163,7 +163,7 @@ var Keyframes = function () {
   }, {
     key: "plugin",
     value: function plugin(pluginFunc) {
-      pluginFunc();
+      pluginFunc(Keyframes);
     }
   }]);
 

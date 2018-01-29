@@ -125,6 +125,6 @@ export default class Keyframes {
     }
 
     static plugin(pluginFunc) {
-        pluginFunc();
+        pluginFunc(Keyframes);
     }
 }
