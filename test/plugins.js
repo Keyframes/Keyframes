@@ -1,5 +1,5 @@
 const assert = require('assert');
-const Keyframes = require('../dist/keyframes');
+const Keyframes = require('../dist/keyframes.es6').default;
 
 describe('Plugins', () => {
     describe('#plugin()', () => {
@@ -8,7 +8,7 @@ describe('Plugins', () => {
                 kf.newFunc = () => true
             }
 
-            plugin(Keyframes);
+            Keyframes.plugin(plugin);
 
             assert.equal(true, Keyframes.newFunc());
         });
