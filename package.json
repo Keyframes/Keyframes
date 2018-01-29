@@ -12,7 +12,8 @@
     "buildExample": "npm run es6Example && npm run browserifyExample && npm run cleanupExample",
     "es6Example": "babel example/example.js -o example/example.es6.js --no-comments",
     "browserifyExample": "browserify example/example.es6.js -o example/example.dist.js -t [ babelify --presets [ @babel/preset-env ] ]",
-    "cleanupExample": "rm example/example.es6.js"
+    "cleanupExample": "rm example/example.es6.js",
+    "versions": "browserify --version && babel --version && node --version"
   },
   "repository": {
     "type": "git",
