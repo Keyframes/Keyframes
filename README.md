@@ -12,13 +12,18 @@ Keyframes allows you to manage and execute animations using Javascript.
 
 Installation
 ------------
-Include script in your document using the following line:
 
-```html
-<script src='/path/to/keyframes[.min].js'></script>
+Install from npm:
+```
+npm install @keyframes/core --save
 ```
 
-Be sure to define and play animations after the page has loaded using `window.onload`.
+Import into your project using the following line:
+```javascript
+import Keyframes from '@keyframes/core';
+```
+
+Be sure to define and play animations after the page has loaded by including your script tag at the bottom of the document or using `window.onload`.
 
 Usage
 -------------
@@ -194,9 +199,19 @@ ball.resume();
 
 Plugins!
 --------
+
+Installing a plugin is simple...
+```javascript
+import Pathfinder from '@keyframes/pathfinder';
+Keyframes.plugin(Pathfinder);
+```
+
 See other plugins that allow for spritesheets & more complex movement paths: https://github.com/Keyframes
 
 Changelog
 ---------
+**1.0.3**
+* Make it a module
+* Add plugin function
 **1.0.0**
 * Vanilla project initiated

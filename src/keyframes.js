@@ -1,4 +1,4 @@
-class Keyframes { // eslint-disable-line
+export default class Keyframes {
     constructor(elem) {
         this.elem = elem;
     }
@@ -122,5 +122,9 @@ class Keyframes { // eslint-disable-line
         } else {
             this.generate(frameData);
         }
+    }
+
+    static plugin(pluginFunc) {
+        pluginFunc();
     }
 }
