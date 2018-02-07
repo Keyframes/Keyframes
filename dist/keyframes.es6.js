@@ -26,6 +26,7 @@ var Keyframes = function () {
   }, {
     key: "reset",
     value: function reset(callback) {
+      this.removeEvents();
       this.elem.style.animationPlayState = 'running';
       this.elem.style.animation = 'none';
 
@@ -47,6 +48,13 @@ var Keyframes = function () {
     key: "play",
     value: function play(frameOptions, callback) {
       var _this = this;
+
+      if (this.elem.style.animationName === frameOptions.name) {
+        this.reset(function () {
+          return _this.play(frameOptions, callback);
+        });
+        return this;
+      }
 
       var animObjToStr = function animObjToStr(obj) {
         var newObj = Object.assign({}, {
@@ -91,6 +99,13 @@ var Keyframes = function () {
       this.frameOptions = frameOptions;
       addEvent('animationiteration', callback || frameOptions.complete);
       addEvent('animationend', callback || frameOptions.complete);
+      return this;
+    }
+  }, {
+    key: "removeEvents",
+    value: function removeEvents() {
+      this.elem.removeEventListener('animationiteration', this.animationiterationListener);
+      this.elem.removeEventListener('animationend', this.animationendListener);
     }
   }], [{
     key: "createKeyframeTag",
@@ -124,12 +139,13 @@ var Keyframes = function () {
         css = "@media ".concat(frameData.media, "{").concat(css, "}");
       }
 
-      var frameStyle = document.getElementById(frameName);
+      var kfTagId = "Keyframes".concat(frameName);
+      var frameStyle = document.getElementById(kfTagId);
 
       if (frameStyle) {
         frameStyle.innerHTML = css;
       } else {
-        Keyframes.createKeyframeTag(frameName, css);
+        Keyframes.createKeyframeTag(kfTagId, css);
       }
     }
   }, {

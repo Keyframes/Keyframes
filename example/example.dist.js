@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
 "use strict";
 
 var _keyframes = _interopRequireDefault(require("../src/keyframes"));
@@ -38,6 +38,10 @@ window.pause = function () {
 
 window.resume = function () {
   ball.resume();
+};
+
+window.reset = function () {
+  ball.reset();
 };
 
 var cbElem = document.getElementById('cb');
@@ -105,6 +109,24 @@ window.play = function (animation) {
         break;
 
       default:
+      case 'chained':
+        ball.play({
+          name: 'ball-spin',
+          duration: "1s",
+          iterationCount: 1
+        }, function () {
+          increment();
+          setTimeout(function () {
+            return ball.play({
+              name: 'ball-move',
+              duration: "1s",
+              iterationCount: 1
+            }, function () {
+              ball.reset();
+              increment();
+            });
+          }, 1000);
+        });
     }
   });
 };
@@ -140,6 +162,7 @@ function () {
   }, {
     key: "reset",
     value: function reset(callback) {
+      this.removeEvents();
       this.elem.style.animationPlayState = 'running';
       this.elem.style.animation = 'none';
 
@@ -161,6 +184,13 @@ function () {
     key: "play",
     value: function play(frameOptions, callback) {
       var _this = this;
+
+      if (this.elem.style.animationName === frameOptions.name) {
+        this.reset(function () {
+          return _this.play(frameOptions, callback);
+        });
+        return this;
+      }
 
       var animObjToStr = function animObjToStr(obj) {
         var newObj = Object.assign({}, {
@@ -205,6 +235,13 @@ function () {
       this.frameOptions = frameOptions;
       addEvent('animationiteration', callback || frameOptions.complete);
       addEvent('animationend', callback || frameOptions.complete);
+      return this;
+    }
+  }, {
+    key: "removeEvents",
+    value: function removeEvents() {
+      this.elem.removeEventListener('animationiteration', this.animationiterationListener);
+      this.elem.removeEventListener('animationend', this.animationendListener);
     }
   }], [{
     key: "createKeyframeTag",
@@ -238,12 +275,13 @@ function () {
         css = "@media ".concat(frameData.media, "{").concat(css, "}");
       }
 
-      var frameStyle = document.getElementById(frameName);
+      var kfTagId = "Keyframes".concat(frameName);
+      var frameStyle = document.getElementById(kfTagId);
 
       if (frameStyle) {
         frameStyle.innerHTML = css;
       } else {
-        Keyframes.createKeyframeTag(frameName, css);
+        Keyframes.createKeyframeTag(kfTagId, css);
       }
     }
   }, {
@@ -260,7 +298,7 @@ function () {
   }, {
     key: "plugin",
     value: function plugin(pluginFunc) {
-      pluginFunc();
+      pluginFunc(Keyframes);
     }
   }]);
 

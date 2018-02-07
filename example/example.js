@@ -34,6 +34,11 @@ window.resume = () => {
     ball.resume();
 };
 
+window.reset = () => {
+    // reset keyframe animation
+    ball.reset();
+};
+
 // example callback function
 const cbElem = document.getElementById('cb');
 function increment() {
@@ -116,6 +121,24 @@ window.play = (animation) => {
             );
             break;
         default:
+
+        case 'chained':
+        // play chained animations using callbacks
+            ball.play({
+                name: 'ball-spin',
+                duration: "1s",
+                iterationCount: 1
+              }, () => {
+                increment();
+                setTimeout(() => ball.play({
+                    name: 'ball-move',
+                    duration: "1s",
+                    iterationCount: 1
+                  }, () => {
+                    ball.reset();
+                    increment();
+                }), 1000);
+            });
         }
     });
 };

@@ -8,6 +8,7 @@ export default class Keyframes {
     }
 
     reset(callback) {
+        this.removeEvents();
         this.elem.style.animationPlayState = 'running';
         this.elem.style.animation = 'none';
 
@@ -25,6 +26,11 @@ export default class Keyframes {
     }
 
     play(frameOptions, callback) {
+        if (this.elem.style.animationName === frameOptions.name) {
+            this.reset(() => this.play(frameOptions, callback));
+            return this;
+        }
+
         const animObjToStr = function (obj) {
             const newObj = Object.assign({}, {
                 duration: '0s',
@@ -75,6 +81,12 @@ export default class Keyframes {
 
         addEvent('animationiteration', callback || frameOptions.complete);
         addEvent('animationend', callback || frameOptions.complete);
+        return this;
+    }
+
+    removeEvents() {
+        this.elem.removeEventListener('animationiteration', this.animationiterationListener);
+        this.elem.removeEventListener('animationend', this.animationendListener);
     }
 
     static createKeyframeTag(id, css) {
@@ -105,12 +117,13 @@ export default class Keyframes {
             css = `@media ${frameData.media}{${css}}`;
         }
 
-        const frameStyle = document.getElementById(frameName);
+        const kfTagId = `Keyframes${frameName}`;
+        const frameStyle = document.getElementById(kfTagId);
 
         if (frameStyle) {
             frameStyle.innerHTML = css;
         } else {
-            Keyframes.createKeyframeTag(frameName, css);
+            Keyframes.createKeyframeTag(kfTagId, css);
         }
     }
 
