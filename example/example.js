@@ -126,18 +126,20 @@ window.play = (animation) => {
         // play chained animations using callbacks
             ball.play({
                 name: 'ball-spin',
-                duration: "1s",
-                iterationCount: 1
-              }, () => {
-                increment();
-                setTimeout(() => ball.play({
-                    name: 'ball-move',
-                    duration: "1s",
-                    iterationCount: 1
-                  }, () => {
-                    ball.reset();
+                duration: '1s',
+                iterationCount: 1,
+                complete: () => {
                     increment();
-                }), 1000);
+                    setTimeout(() => ball.play({
+                        name: 'ball-move',
+                        duration: '1s',
+                        iterationCount: 1,
+                        complete: () => {
+                            ball.reset();
+                            increment();
+                        },
+                    }), 1000);
+                },
             });
         }
     });

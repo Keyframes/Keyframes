@@ -112,20 +112,22 @@ window.play = function (animation) {
       case 'chained':
         ball.play({
           name: 'ball-spin',
-          duration: "1s",
-          iterationCount: 1
-        }, function () {
-          increment();
-          setTimeout(function () {
-            return ball.play({
-              name: 'ball-move',
-              duration: "1s",
-              iterationCount: 1
-            }, function () {
-              ball.reset();
-              increment();
-            });
-          }, 1000);
+          duration: '1s',
+          iterationCount: 1,
+          complete: function complete() {
+            increment();
+            setTimeout(function () {
+              return ball.play({
+                name: 'ball-move',
+                duration: '1s',
+                iterationCount: 1,
+                complete: function complete() {
+                  ball.reset();
+                  increment();
+                }
+              });
+            }, 1000);
+          }
         });
     }
   });
