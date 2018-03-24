@@ -197,6 +197,33 @@ ball.pause();
 ball.resume();
 ```
 
+Want more control?
+-------------
+
+**Generate the defined keyframes css**
+
+```javascript
+let css = Keyframes.defineCSS({
+    name: 'ball-spin',
+    from: {
+        transform: 'rotate(90deg)',
+    },
+    to: {
+        transform: 'rotate(450deg)',
+    },
+}); // "@keyframes ball-spin {from {transform:rotate(90deg);}to {transform:rotate(450deg);}"
+```
+
+**Generate the "animation" rule's value (play)**
+
+```javascript
+const css = Keyframes.playCSS({
+    name: 'ball-spin',
+    duration: '1s',
+    iterationCount: 1
+}); // "ball-spin 1s ease 0s 1 normal forwards"
+```
+
 Plugins!
 --------
 
@@ -210,6 +237,8 @@ See other plugins that allow for spritesheets & more complex movement paths: htt
 
 Changelog
 ---------
+**1.0.7**
+* Add playCSS and defineCSS generation functions
 **1.0.3**
 * Make it a module
 * Add plugin function

@@ -194,6 +194,34 @@ function () {
         return this;
       }
 
+      var animationcss = Keyframes.playCSS(frameOptions);
+
+      var addEvent = function addEvent(type, eventCallback) {
+        var listenerName = "".concat(type, "Listener");
+
+        _this.elem.removeEventListener(type, _this[listenerName]);
+
+        _this[listenerName] = eventCallback;
+
+        _this.elem.addEventListener(type, _this[listenerName]);
+      };
+
+      this.elem.style.animationPlayState = 'running';
+      this.elem.style.animation = animationcss;
+      this.frameOptions = frameOptions;
+      addEvent('animationiteration', callback || frameOptions.complete);
+      addEvent('animationend', callback || frameOptions.complete);
+      return this;
+    }
+  }, {
+    key: "removeEvents",
+    value: function removeEvents() {
+      this.elem.removeEventListener('animationiteration', this.animationiterationListener);
+      this.elem.removeEventListener('animationend', this.animationendListener);
+    }
+  }], [{
+    key: "playCSS",
+    value: function playCSS(frameOptions) {
       var animObjToStr = function animObjToStr(obj) {
         var newObj = Object.assign({}, {
           duration: '0s',
@@ -222,30 +250,9 @@ function () {
         animationcss = animObjToStr(frameOptions);
       }
 
-      var addEvent = function addEvent(type, eventCallback) {
-        var listenerName = "".concat(type, "Listener");
-
-        _this.elem.removeEventListener(type, _this[listenerName]);
-
-        _this[listenerName] = eventCallback;
-
-        _this.elem.addEventListener(type, _this[listenerName]);
-      };
-
-      this.elem.style.animationPlayState = 'running';
-      this.elem.style.animation = animationcss;
-      this.frameOptions = frameOptions;
-      addEvent('animationiteration', callback || frameOptions.complete);
-      addEvent('animationend', callback || frameOptions.complete);
-      return this;
+      return animationcss;
     }
   }, {
-    key: "removeEvents",
-    value: function removeEvents() {
-      this.elem.removeEventListener('animationiteration', this.animationiterationListener);
-      this.elem.removeEventListener('animationend', this.animationendListener);
-    }
-  }], [{
     key: "createKeyframeTag",
     value: function createKeyframeTag(id, css) {
       var elem = document.createElement('style');
@@ -256,8 +263,8 @@ function () {
       document.getElementsByTagName('head')[0].appendChild(elem);
     }
   }, {
-    key: "generate",
-    value: function generate(frameData) {
+    key: "generateCSS",
+    value: function generateCSS(frameData) {
       var frameName = frameData.name || '';
       var css = "@keyframes ".concat(frameName, " {");
 
@@ -277,6 +284,13 @@ function () {
         css = "@media ".concat(frameData.media, "{").concat(css, "}");
       }
 
+      return css;
+    }
+  }, {
+    key: "generate",
+    value: function generate(frameData) {
+      var frameName = frameData.name || '';
+      var css = this.generateCSS(frameData);
       var kfTagId = "Keyframes".concat(frameName);
       var frameStyle = document.getElementById(kfTagId);
 
@@ -298,6 +312,21 @@ function () {
       }
     }
   }, {
+    key: "defineCSS",
+    value: function defineCSS(frameData) {
+      if (frameData.length) {
+        var css = "";
+
+        for (var i = 0; i < frameData.length; i += 1) {
+          css += this.generateCSS(frameData[i]);
+        }
+
+        return css;
+      } else {
+        return this.generateCSS(frameData);
+      }
+    }
+  }, {
     key: "plugin",
     value: function plugin(pluginFunc) {
       pluginFunc(Keyframes);
@@ -307,6 +336,7 @@ function () {
   return Keyframes;
 }();
 
-exports.default = Keyframes;
+var _default = Keyframes;
+exports.default = _default;
 
 },{}]},{},[1]);

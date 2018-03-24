@@ -1,4 +1,4 @@
-export default class Keyframes {
+class Keyframes {
     constructor(elem) {
         this.elem = elem;
     }
@@ -24,13 +24,37 @@ export default class Keyframes {
     resume() {
         this.elem.style.animationPlayState = 'running';
     }
-
+    
     play(frameOptions, callback) {
         if (this.elem.style.animationName === frameOptions.name) {
             this.reset(() => this.play(frameOptions, callback));
             return this;
         }
-
+        
+        const animationcss = Keyframes.playCSS(frameOptions);
+        
+        const addEvent = (type, eventCallback) => {
+            const listenerName = `${type}Listener`;
+            this.elem.removeEventListener(type, this[listenerName]);
+            this[listenerName] = eventCallback;
+            this.elem.addEventListener(type, this[listenerName]);
+        };
+        
+        this.elem.style.animationPlayState = 'running';
+        this.elem.style.animation = animationcss;
+        this.frameOptions = frameOptions;
+        
+        addEvent('animationiteration', callback || frameOptions.complete);
+        addEvent('animationend', callback || frameOptions.complete);
+        return this;
+    }
+    
+    removeEvents() {
+        this.elem.removeEventListener('animationiteration', this.animationiterationListener);
+        this.elem.removeEventListener('animationend', this.animationendListener);
+    }
+    
+    static playCSS(frameOptions) {
         const animObjToStr = function (obj) {
             const newObj = Object.assign({}, {
                 duration: '0s',
@@ -67,26 +91,7 @@ export default class Keyframes {
         } else {
             animationcss = animObjToStr(frameOptions);
         }
-
-        const addEvent = (type, eventCallback) => {
-            const listenerName = `${type}Listener`;
-            this.elem.removeEventListener(type, this[listenerName]);
-            this[listenerName] = eventCallback;
-            this.elem.addEventListener(type, this[listenerName]);
-        };
-
-        this.elem.style.animationPlayState = 'running';
-        this.elem.style.animation = animationcss;
-        this.frameOptions = frameOptions;
-
-        addEvent('animationiteration', callback || frameOptions.complete);
-        addEvent('animationend', callback || frameOptions.complete);
-        return this;
-    }
-
-    removeEvents() {
-        this.elem.removeEventListener('animationiteration', this.animationiterationListener);
-        this.elem.removeEventListener('animationend', this.animationendListener);
+        return animationcss;
     }
 
     static createKeyframeTag(id, css) {
@@ -98,7 +103,7 @@ export default class Keyframes {
         document.getElementsByTagName('head')[0].appendChild(elem);
     }
 
-    static generate(frameData) {
+    static generateCSS(frameData) {
         const frameName = frameData.name || '';
         let css = `@keyframes ${frameName} {`;
         for (const key in frameData) {
@@ -116,6 +121,12 @@ export default class Keyframes {
         if (frameData.media) {
             css = `@media ${frameData.media}{${css}}`;
         }
+        return css;
+    }
+
+    static generate(frameData) {
+        const frameName = frameData.name || '';
+        const css = this.generateCSS(frameData);
 
         const kfTagId = `Keyframes${frameName}`;
         const frameStyle = document.getElementById(kfTagId);
@@ -137,7 +148,21 @@ export default class Keyframes {
         }
     }
 
+    static defineCSS(frameData) {
+        if (frameData.length) {
+            let css = "";
+            for (let i = 0; i < frameData.length; i += 1) {
+                css += this.generateCSS(frameData[i]);
+            }
+            return css;
+        } else {
+            return this.generateCSS(frameData);
+        }
+    }
+
     static plugin(pluginFunc) {
         pluginFunc(Keyframes);
     }
 }
+
+export default Keyframes;

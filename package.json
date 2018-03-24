@@ -1,6 +1,6 @@
 {
   "name": "@keyframes/core",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Keyframes allows dynamic generation of CSS3 keyframes with callback events and other niceness.",
   "main": "src/keyframes.js",
   "scripts": {
@@ -15,7 +15,7 @@
     "cleanupExample": "rm example/example.es6.js && rm -f *.tmp-*",
     "watch": "nodemon --watch example/example.js --watch src --exec 'npm run build && npm run buildExample'",
     "versions": "browserify --version && babel --version && node --version",
-    "test": "mocha --inspect-brk"
+    "test": "npm run es6 && mocha"
   },
   "repository": {
     "type": "git",
