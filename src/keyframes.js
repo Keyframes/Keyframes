@@ -117,6 +117,7 @@ class Keyframes {
                 css += '}';
             }
         }
+        css += '}';
 
         if (frameData.media) {
             css = `@media ${frameData.media}{${css}}`;

@@ -42,7 +42,7 @@ describe('CSS', () => {
                 },
             });
 
-            assert.equal(css, "@keyframes ball-spin {from {transform:rotate(90deg);}to {transform:rotate(450deg);}");
+            assert.equal(css, "@keyframes ball-spin {from {transform:rotate(90deg);}to {transform:rotate(450deg);}}");
 
             css = Keyframes.defineCSS([{
                 name: 'ball-spin',
@@ -56,7 +56,7 @@ describe('CSS', () => {
                 },
             }]);
 
-            assert.equal(css, "@keyframes ball-spin {from {transform:rotate(90deg);}@keyframes ball-spin2 {from {transform:rotate(70deg);}");
+            assert.equal(css, "@keyframes ball-spin {from {transform:rotate(90deg);}}@keyframes ball-spin2 {from {transform:rotate(70deg);}}");
 
         });
     });

@@ -159,6 +159,8 @@ var Keyframes = function () {
         }
       }
 
+      css += '}';
+
       if (frameData.media) {
         css = "@media ".concat(frameData.media, "{").concat(css, "}");
       }
