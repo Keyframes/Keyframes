@@ -115,16 +115,6 @@ var Keyframes = function () {
       return animationcss;
     }
   }, {
-    key: "createKeyframeTag",
-    value: function createKeyframeTag(id, css) {
-      var elem = document.createElement('style');
-      elem.innerHTML = css;
-      elem.setAttribute('class', 'keyframe-style');
-      elem.setAttribute('id', id);
-      elem.setAttribute('type', 'text/css');
-      document.getElementsByTagName('head')[0].appendChild(elem);
-    }
-  }, {
     key: "generateCSS",
     value: function generateCSS(frameData) {
       var frameName = frameData.name || '';
@@ -155,14 +145,15 @@ var Keyframes = function () {
     value: function generate(frameData) {
       var frameName = frameData.name || '';
       var css = this.generateCSS(frameData);
-      var kfTagId = "Keyframes".concat(frameName);
-      var frameStyle = document.getElementById(kfTagId);
+      var oldFrameIndex = Keyframes.rules.indexOf(frameName);
 
-      if (frameStyle) {
-        frameStyle.innerHTML = css;
-      } else {
-        Keyframes.createKeyframeTag(kfTagId, css);
+      if (oldFrameIndex > -1) {
+        Keyframes.sheet.deleteRule(oldFrameIndex);
+        delete Keyframes.rules[oldFrameIndex];
       }
+
+      var ruleIndex = Keyframes.sheet.insertRule(css);
+      Keyframes.rules[ruleIndex] = frameName;
     }
   }, {
     key: "define",
@@ -179,16 +170,16 @@ var Keyframes = function () {
     key: "defineCSS",
     value: function defineCSS(frameData) {
       if (frameData.length) {
-        var css = "";
+        var css = '';
 
         for (var i = 0; i < frameData.length; i += 1) {
           css += this.generateCSS(frameData[i]);
         }
 
         return css;
-      } else {
-        return this.generateCSS(frameData);
       }
+
+      return this.generateCSS(frameData);
     }
   }, {
     key: "plugin",
@@ -199,6 +190,14 @@ var Keyframes = function () {
 
   return Keyframes;
 }();
+
+if (typeof document !== 'undefined') {
+  var style = document.createElement('style');
+  style.setAttribute('id', 'keyframesjs-stylesheet');
+  document.head.appendChild(style);
+  Keyframes.sheet = style.sheet;
+  Keyframes.rules = [];
+}
 
 var _default = Keyframes;
 exports.default = _default;

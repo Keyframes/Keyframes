@@ -24,36 +24,36 @@ class Keyframes {
     resume() {
         this.elem.style.animationPlayState = 'running';
     }
-    
+
     play(frameOptions, callback) {
         if (this.elem.style.animationName === frameOptions.name) {
             this.reset(() => this.play(frameOptions, callback));
             return this;
         }
-        
+
         const animationcss = Keyframes.playCSS(frameOptions);
-        
+
         const addEvent = (type, eventCallback) => {
             const listenerName = `${type}Listener`;
             this.elem.removeEventListener(type, this[listenerName]);
             this[listenerName] = eventCallback;
             this.elem.addEventListener(type, this[listenerName]);
         };
-        
+
         this.elem.style.animationPlayState = 'running';
         this.elem.style.animation = animationcss;
         this.frameOptions = frameOptions;
-        
+
         addEvent('animationiteration', callback || frameOptions.complete);
         addEvent('animationend', callback || frameOptions.complete);
         return this;
     }
-    
+
     removeEvents() {
         this.elem.removeEventListener('animationiteration', this.animationiterationListener);
         this.elem.removeEventListener('animationend', this.animationendListener);
     }
-    
+
     static playCSS(frameOptions) {
         const animObjToStr = function (obj) {
             const newObj = Object.assign({}, {
@@ -94,15 +94,6 @@ class Keyframes {
         return animationcss;
     }
 
-    static createKeyframeTag(id, css) {
-        const elem = document.createElement('style');
-        elem.innerHTML = css;
-        elem.setAttribute('class', 'keyframe-style');
-        elem.setAttribute('id', id);
-        elem.setAttribute('type', 'text/css');
-        document.getElementsByTagName('head')[0].appendChild(elem);
-    }
-
     static generateCSS(frameData) {
         const frameName = frameData.name || '';
         let css = `@keyframes ${frameName} {`;
@@ -129,14 +120,13 @@ class Keyframes {
         const frameName = frameData.name || '';
         const css = this.generateCSS(frameData);
 
-        const kfTagId = `Keyframes${frameName}`;
-        const frameStyle = document.getElementById(kfTagId);
-
-        if (frameStyle) {
-            frameStyle.innerHTML = css;
-        } else {
-            Keyframes.createKeyframeTag(kfTagId, css);
+        const oldFrameIndex = Keyframes.rules.indexOf(frameName);
+        if (oldFrameIndex > -1) {
+            Keyframes.sheet.deleteRule(oldFrameIndex);
+            delete Keyframes.rules[oldFrameIndex];
         }
+        const ruleIndex = Keyframes.sheet.insertRule(css);
+        Keyframes.rules[ruleIndex] = frameName;
     }
 
     static define(frameData) {
@@ -151,19 +141,26 @@ class Keyframes {
 
     static defineCSS(frameData) {
         if (frameData.length) {
-            let css = "";
+            let css = '';
             for (let i = 0; i < frameData.length; i += 1) {
                 css += this.generateCSS(frameData[i]);
             }
             return css;
-        } else {
-            return this.generateCSS(frameData);
         }
+        return this.generateCSS(frameData);
     }
 
     static plugin(pluginFunc) {
         pluginFunc(Keyframes);
     }
+}
+
+if (typeof document !== 'undefined') {
+    const style = document.createElement('style');
+    style.setAttribute('id', 'keyframesjs-stylesheet');
+    document.head.appendChild(style);
+    Keyframes.sheet = style.sheet;
+    Keyframes.rules = [];
 }
 
 export default Keyframes;

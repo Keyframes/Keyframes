@@ -237,6 +237,8 @@ See other plugins that allow for spritesheets & more complex movement paths: htt
 
 Changelog
 ---------
+**1.1.0**
+* Use `insertRule` to add keyframes to a single style tag in the header.
 **1.0.7**
 * Add playCSS and defineCSS generation functions
 **1.0.3**

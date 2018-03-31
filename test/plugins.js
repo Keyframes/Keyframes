@@ -1,5 +1,5 @@
 const assert = require('assert');
-const Keyframes = require('../dist/keyframes.es6').default;
+const Keyframes = require('../dist/keyframes.es5').default;
 
 describe('Plugins', () => {
     describe('#plugin()', () => {
