@@ -12,6 +12,21 @@ describe('Plugins', () => {
 
             assert.equal(true, Keyframes.newFunc());
         });
+
+        it('should extend the keyframes class using an array', () => {
+            const plugin = (kf) => {
+                kf.newFunc = () => true
+            }
+
+            const plugin2 = (kf) => {
+                kf.newFunc2 = () => true
+            }
+
+            Keyframes.plugin([plugin, plugin2]);
+
+            assert.equal(true, Keyframes.newFunc());
+            assert.equal(true, Keyframes.newFunc2());
+        });
     });
 });
 

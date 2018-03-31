@@ -13,7 +13,7 @@ class Keyframes {
         this.elem.style.animation = 'none';
 
         if (callback) {
-            setTimeout(callback, 0);
+            requestAnimationFrame(callback);
         }
     }
 
@@ -76,8 +76,6 @@ class Keyframes {
             ].join(' ');
         };
 
-        let animationcss = '';
-
         if (frameOptions.constructor === Array) {
             const frameOptionsStrings = [];
             for (let i = 0; i < frameOptions.length; i += 1) {
@@ -85,18 +83,16 @@ class Keyframes {
                     frameOptions[i] :
                     animObjToStr(frameOptions[i]));
             }
-            animationcss = frameOptionsStrings.join(', ');
+            return frameOptionsStrings.join(', ');
         } else if (typeof frameOptions === 'string') {
-            animationcss = frameOptions;
-        } else {
-            animationcss = animObjToStr(frameOptions);
+            return frameOptions;
         }
-        return animationcss;
+
+        return animObjToStr(frameOptions);
     }
 
     static generateCSS(frameData) {
-        const frameName = frameData.name || '';
-        let css = `@keyframes ${frameName} {`;
+        let css = `@keyframes ${frameData.name} {`;
         for (const key in frameData) {
             if (key !== 'name' && key !== 'media' && key !== 'complete') {
                 css += `${key} {`;
@@ -117,16 +113,15 @@ class Keyframes {
     }
 
     static generate(frameData) {
-        const frameName = frameData.name || '';
         const css = this.generateCSS(frameData);
 
-        const oldFrameIndex = Keyframes.rules.indexOf(frameName);
+        const oldFrameIndex = Keyframes.rules.indexOf(frameData.name);
         if (oldFrameIndex > -1) {
             Keyframes.sheet.deleteRule(oldFrameIndex);
             delete Keyframes.rules[oldFrameIndex];
         }
         const ruleIndex = Keyframes.sheet.insertRule(css);
-        Keyframes.rules[ruleIndex] = frameName;
+        Keyframes.rules[ruleIndex] = frameData.name;
     }
 
     static define(frameData) {
@@ -151,7 +146,13 @@ class Keyframes {
     }
 
     static plugin(pluginFunc) {
-        pluginFunc(Keyframes);
+        if (pluginFunc.constructor === Array) {
+            for (let i = 0; i < pluginFunc.length; i += 1) {
+                pluginFunc[i](Keyframes);
+            }
+        } else {
+            pluginFunc(Keyframes);
+        }
     }
 }
 

@@ -230,13 +230,17 @@ Plugins!
 Installing a plugin is simple...
 ```javascript
 import Pathfinder from '@keyframes/pathfinder';
-Keyframes.plugin(Pathfinder);
+Keyframes.plugin(Pathfinder); // You can also pass an array of plugins for convenience.
 ```
 
 See other plugins that allow for spritesheets & more complex movement paths: https://github.com/Keyframes
 
 Changelog
 ---------
+**1.1.1**
+* Reset now uses `requestAnimationFrame` instead of timeouts.
+* Allow an array of plugins to be added
+* Code reduction.
 **1.1.0**
 * Use `insertRule` to add keyframes to a single style tag in the header.
 **1.0.7**

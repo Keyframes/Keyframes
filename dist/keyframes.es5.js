@@ -31,7 +31,7 @@ var Keyframes = function () {
       this.elem.style.animation = 'none';
 
       if (callback) {
-        setTimeout(callback, 0);
+        requestAnimationFrame(callback);
       }
     }
   }, {
@@ -96,8 +96,6 @@ var Keyframes = function () {
         return [newObj.name, newObj.duration, newObj.timingFunction, newObj.delay, newObj.iterationCount, newObj.direction, newObj.fillMode].join(' ');
       };
 
-      var animationcss = '';
-
       if (frameOptions.constructor === Array) {
         var frameOptionsStrings = [];
 
@@ -105,20 +103,17 @@ var Keyframes = function () {
           frameOptionsStrings.push(typeof frameOptions[i] === 'string' ? frameOptions[i] : animObjToStr(frameOptions[i]));
         }
 
-        animationcss = frameOptionsStrings.join(', ');
+        return frameOptionsStrings.join(', ');
       } else if (typeof frameOptions === 'string') {
-        animationcss = frameOptions;
-      } else {
-        animationcss = animObjToStr(frameOptions);
+        return frameOptions;
       }
 
-      return animationcss;
+      return animObjToStr(frameOptions);
     }
   }, {
     key: "generateCSS",
     value: function generateCSS(frameData) {
-      var frameName = frameData.name || '';
-      var css = "@keyframes ".concat(frameName, " {");
+      var css = "@keyframes ".concat(frameData.name, " {");
 
       for (var key in frameData) {
         if (key !== 'name' && key !== 'media' && key !== 'complete') {
@@ -143,9 +138,8 @@ var Keyframes = function () {
   }, {
     key: "generate",
     value: function generate(frameData) {
-      var frameName = frameData.name || '';
       var css = this.generateCSS(frameData);
-      var oldFrameIndex = Keyframes.rules.indexOf(frameName);
+      var oldFrameIndex = Keyframes.rules.indexOf(frameData.name);
 
       if (oldFrameIndex > -1) {
         Keyframes.sheet.deleteRule(oldFrameIndex);
@@ -153,7 +147,7 @@ var Keyframes = function () {
       }
 
       var ruleIndex = Keyframes.sheet.insertRule(css);
-      Keyframes.rules[ruleIndex] = frameName;
+      Keyframes.rules[ruleIndex] = frameData.name;
     }
   }, {
     key: "define",
@@ -184,7 +178,13 @@ var Keyframes = function () {
   }, {
     key: "plugin",
     value: function plugin(pluginFunc) {
-      pluginFunc(Keyframes);
+      if (pluginFunc.constructor === Array) {
+        for (var i = 0; i < pluginFunc.length; i += 1) {
+          pluginFunc[i](Keyframes);
+        }
+      } else {
+        pluginFunc(Keyframes);
+      }
     }
   }]);
 
