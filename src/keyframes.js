@@ -38,9 +38,9 @@ class Keyframes {
 
         const {
             onBeforeStart, onStart, onIteration, onEnd,
-        } = callbacks;
+        } = callbacks || {};
 
-        const animationcss = this.constructor.playCSS(animationOptions);
+        const animationcss = Keyframes.playCSS(animationOptions);
 
         const addEvent = (type, eventCallback) => {
             const listenerName = `${type}Listener`;
@@ -74,40 +74,41 @@ class Keyframes {
         return this;
     }
 
-    playNext(callbacks) {
-        const {
-            onIteration, onEnd,
-        } = callbacks;
+    playNext() {
         const animationOption = this.queueStore.pop();
         if (animationOption) {
             this.play(animationOption, {
-                onEnd: this.playNext.bind(this, callbacks),
-                onIteration,
+                onEnd: () => this.playNext(),
+                onIteration: this.callbacks.onIteration,
             });
-        } else if (onEnd) {
-            onEnd();
+        } else if (this.callbacks.onEnd) {
+            this.callbacks.onEnd();
+        }
+    }
+
+    updateCallbacks(callbacks) {
+        if (callbacks) {
+            this.callbacks = Object.assign({}, this.callbacks, callbacks);
         }
     }
 
     queue(animationOptions, callbacks) {
         const currentQueueLength = this.queueStore.length;
-        const {
-            onBeforeStart, onStart,
-        } = callbacks;
+        this.updateCallbacks(callbacks);
 
         if (animationOptions.constructor === Array) {
-            this.queueStore = animationOptions.concat(this.queueStore);
+            this.queueStore = animationOptions.reverse().concat(this.queueStore);
         } else {
             this.queueStore.unshift(animationOptions);
         }
 
         if (!currentQueueLength) {
-            if (onBeforeStart) {
-                onBeforeStart();
+            if (this.callbacks.onBeforeStart) {
+                this.callbacks.onBeforeStart();
             }
             this.playNext(callbacks);
-            if (onStart) {
-                requestAnimationFrame(onStart);
+            if (this.callbacks.onStart) {
+                requestAnimationFrame(this.callbacks.onStart);
             }
         }
         return this;
@@ -191,13 +192,13 @@ class Keyframes {
     static generate(frameData) {
         const css = this.generateCSS(frameData);
 
-        const oldFrameIndex = this.constructor.rules.indexOf(frameData.name);
+        const oldFrameIndex = this.rules.indexOf(frameData.name);
         if (oldFrameIndex > -1) {
-            this.constructor.sheet.deleteRule(oldFrameIndex);
-            delete this.constructor.rules[oldFrameIndex];
+            this.sheet.deleteRule(oldFrameIndex);
+            delete this.rules[oldFrameIndex];
         }
-        const ruleIndex = this.constructor.sheet.insertRule(css);
-        this.constructor.rules[ruleIndex] = frameData.name;
+        const ruleIndex = this.sheet.insertRule(css);
+        this.rules[ruleIndex] = frameData.name;
     }
 
     static define(frameData) {
@@ -224,10 +225,10 @@ class Keyframes {
     static plugin(pluginFunc) {
         if (pluginFunc.constructor === Array) {
             for (let i = 0; i < pluginFunc.length; i += 1) {
-                pluginFunc[i](Keyframes);
+                pluginFunc[i](this);
             }
         } else {
-            pluginFunc(Keyframes);
+            pluginFunc(this);
         }
     }
 }
@@ -236,8 +237,9 @@ if (typeof document !== 'undefined') {
     const style = document.createElement('style');
     style.setAttribute('id', 'keyframesjs-stylesheet');
     document.head.appendChild(style);
-    this.constructor.sheet = style.sheet;
-    this.constructor.rules = [];
+    Keyframes.sheet = style.sheet;
+    Keyframes.rules = [];
+    window.Keyframes = Keyframes;
 }
 
 export default Keyframes;

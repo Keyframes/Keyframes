@@ -26,3 +26,5 @@ node_modules
 prepros.cfg
 example/example.dist.js
 dist
+.cache
+.mocha-puppeteer
