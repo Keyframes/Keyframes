@@ -24,3 +24,5 @@ ehthumbs.db
 Thumbs.db
 node_modules
 prepros.cfg
+example/example.dist.js
+dist

@@ -5,7 +5,7 @@
   "main": "src/keyframes.js",
   "scripts": {
     "prepare": "npm run build",
-    "build": "npm run es5 && npm run browserify && npm run minify && npm run buildExample",
+    "build": "mkdir -p dist && npm run es5 && npm run browserify && npm run minify && npm run buildExample",
     "es5": "babel src/keyframes.js -o dist/keyframes.es5.js --no-comments",
     "browserify": "browserify dist/keyframes.es5.js -o dist/keyframes.js -t [ babelify --presets [ @babel/preset-env ] ]",
     "minify": "uglifyjs --compress --mangle -- dist/keyframes.js > dist/keyframes.min.js",
