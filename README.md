@@ -1,17 +1,15 @@
-Keyframes
-===========
+# Keyframes
 
 ![](https://badge.fury.io/gh/Keyframes/Keyframes.svg)
 
 Keyframes allows dynamic generation of CSS keyframes with callback events and other niceness.
 
-Overview
---------
+## Overview
+
 CSS3 introduced fancy features like transformations, translations, rotations and scaling.
 Keyframes allows you to manage and execute animations using Javascript.
 
-Installation
-------------
+## Installation
 
 Install from npm:
 ```
@@ -25,14 +23,16 @@ import Keyframes from '@keyframes/core';
 
 Be sure to define and play animations after the page has loaded by including your script tag at the bottom of the document or using `window.onload`.
 
-Usage
--------------
+## Usage
 
 **Detecting CSS animation support**
 
 ```javascript
 var supportedFlag = Keyframes.isSupported();
 ```
+## Defining
+
+Defining keyframes happens before any any animation logic takes place. The CSS is stored and indexed in a single style tag in the header with the id `keyframesjs-stylesheet`.
 
 **Adding a new animation sequence (keyframe)**
 
@@ -52,10 +52,10 @@ Keyframes.define([{
 Keyframes.define({
     name: 'ball-roll',
     from: {
-        'transform': 'rotate(0deg)' //Note that 'transform' will be autoprefixed for you
+        'transform': 'rotate(0deg)'
     },
     to: {
-        'transform': 'rotate(360deg)' //Note that 'transform' will be autoprefixed for you
+        'transform': 'rotate(360deg)'
     }
 });
 ```
@@ -119,6 +119,7 @@ Keyframes.define([{
 *Please note, you can add as many properties to the array as you want to*
 
 **Responsive animations**
+
 ```javascript
 Keyframes.define([{
     name: 'roll-clockwise',
@@ -133,9 +134,10 @@ Keyframes.define([{
 ]);
 ```
 
-**Playing an animation**
+## Playing
 
-First we must create an instance of a keyframe.
+After the keyframes have been defined (see above), they can now be used on any element in the dom.
+First we must create an instance of Keyframejs using our chosen element.
 
 ```javascript
 const ball = new Keyframes(document.getElementById('ball'));
@@ -145,14 +147,19 @@ The css3 animation methods available are better documented here: http://www.w3sc
 
 ```javascript
 ball.play({
-    name: 'trapdoor-sequence', // name of the keyframe you want to bind to the selected element
-    duration: '1s', // [optional, default: 0, in ms] how long you want it to last in milliseconds
-    timingFunction: 'linear', // [optional, default: ease] specifies the speed curve of the animation
-    delay: '0s', //[optional, default: 0s]  how long you want to wait before the animation starts
-    iterationCount: 'infinite', //[optional, default:1]  how many times you want the animation to repeat
+    name: 'trapdoor-sequence', // [required] name of the keyframe you want to bind to the selected element
+    duration: '1s', // [optional, default: '0s'] how long you want it to last in milliseconds
+    timingFunction: 'linear', // [optional, default: 'ease'] specifies the speed curve of the animation
+    delay: '0s', //[optional, default: '0s']  how long you want to wait before the animation starts
+    iterationCount: 'infinite', //[optional, default: 1]  how many times you want the animation to repeat
     direction: 'normal', //[optional, default: 'normal']  which direction you want the frames to flow
     fillMode: 'forwards', //[optional, default: 'forward']  how to apply the styles outside the animation time, default value is forwards
-    complete: function(){} //[optional] Function fired after the animation is complete. If repeat is infinite, the function will be fired every time the animation is restarted.
+}, 
+{ // Callbacks
+    onBeforeStart, // Optional: Fired before the animation starts.
+    onStart, // Optional: Fired after the animation started.
+    onIteration, // Optional: If your animation has multiple iterations, this function will fire after each one.
+    onEnd, // Optional: Fired at the end of the animation but if using a `queue` or `chain`, it will fire after the queue/chain has completed.
 });
 ```
 
@@ -161,11 +168,11 @@ ball.play({
 ```javascript
 ball.play(
     'trapdoor-sequence 1s linear 0s infinite normal forwards',
-    complete
+    callbacks
 );
 ```
 
-**Playing multiple animations**
+**Playing multiple animations simultaneously (at the same time)**
 
 ```javascript
 ball.play([
@@ -176,16 +183,38 @@ ball.play([
       timingFunction: 'ease',
       iterationCount: 1
     }
-], complete);
+], callbacks);
+```
+
+**Playing multiple animations sequentially (one after the other)**
+```javascript
+ball.chain([
+    'trapdoor-sequence 1s',
+    ['crazy 2s', 'crazy-alt 2s'], // These animations are played simultaneously.
+], callbacks);
+```
+
+**Use a queue which can be added to whenever**
+If the queue was previously empty, the queue will start executing immediately.
+```javascript
+ball.queue('trapdoor-sequence 1s', callbacks) // Setting callbacks overrides previous callbacks so you only need to set it on the first call.
+    .queue('crazy 3s'); // Run crazy after the trapdoor-sequence is complete.
+setTimeout(() => ball.queue('crazy 3s'), 1000); // Add crazy to the queue again, so it will be run twice.
 ```
 
 **Reset the animation**
-
+Resets styling, animations and removes callbacks.
 ```javascript
-ball.reset(callback);
+ball.reset().then(doSomething);
 ```
 
-**Freeze keyframe animation and kill callbacks**
+**Reset the queue**
+Resets styling, animations, removes callbacks and clears the queue.
+```javascript
+ball.resetQueue().then(doSomething);
+```
+
+**Pause keyframe animation**
 
 ```javascript
 ball.pause();
@@ -197,8 +226,9 @@ ball.pause();
 ball.resume();
 ```
 
-Want more control?
--------------
+## Want more control?
+
+Handy functions to let you handle the styling yourself...
 
 **Generate the defined keyframes css**
 
@@ -224,8 +254,7 @@ const css = Keyframes.playCSS({
 }); // "ball-spin 1s ease 0s 1 normal forwards"
 ```
 
-Plugins!
---------
+## Plugins!
 
 Installing a plugin is simple...
 ```javascript
@@ -235,8 +264,11 @@ Keyframes.plugin(Pathfinder); // You can also pass an array of plugins for conve
 
 See other plugins that allow for spritesheets & more complex movement paths: https://github.com/Keyframes
 
-Changelog
----------
+## Changelog
+# 2.x
+**2.0.0**
+
+# 1.x
 **1.1.1**
 * Reset now uses `requestAnimationFrame` instead of timeouts.
 * Allow an array of plugins to be added

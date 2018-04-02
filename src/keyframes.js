@@ -1,37 +1,46 @@
 class Keyframes {
     constructor(elem) {
         this.elem = elem;
+        this.queueStore = [];
     }
 
     isSupported() {
         return document.body.style.animationName !== undefined;
     }
 
-    reset(callback) {
-        this.removeEvents();
-        this.elem.style.animationPlayState = 'running';
-        this.elem.style.animation = 'none';
+    reset() {
+        return new Promise((accept) => {
+            this.removeEvents();
+            this.elem.style.animationPlayState = 'running';
+            this.elem.style.animation = 'none';
 
-        if (callback) {
-            requestAnimationFrame(callback);
-        }
+            requestAnimationFrame(() => {
+                accept();
+            });
+        });
     }
 
     pause() {
         this.elem.style.animationPlayState = 'paused';
+        return this;
     }
 
     resume() {
         this.elem.style.animationPlayState = 'running';
+        return this;
     }
 
-    play(frameOptions, callback) {
-        if (this.elem.style.animationName === frameOptions.name) {
-            this.reset(() => this.play(frameOptions, callback));
+    play(animationOptions, callbacks) {
+        if (this.elem.style.animationName === animationOptions.name) {
+            this.reset(() => this.play(animationOptions, callbacks));
             return this;
         }
 
-        const animationcss = Keyframes.playCSS(frameOptions);
+        const {
+            onBeforeStart, onStart, onIteration, onEnd,
+        } = callbacks;
+
+        const animationcss = this.constructor.playCSS(animationOptions);
 
         const addEvent = (type, eventCallback) => {
             const listenerName = `${type}Listener`;
@@ -40,18 +49,85 @@ class Keyframes {
             this.elem.addEventListener(type, this[listenerName]);
         };
 
+        if (onBeforeStart) {
+            onBeforeStart();
+        }
+
         this.elem.style.animationPlayState = 'running';
         this.elem.style.animation = animationcss;
-        this.frameOptions = frameOptions;
 
-        addEvent('animationiteration', callback || frameOptions.complete);
-        addEvent('animationend', callback || frameOptions.complete);
+        if (onIteration) {
+            addEvent('animationiteration', onIteration);
+        }
+        if (onEnd) {
+            addEvent('animationend', onEnd);
+        }
+        if (onStart) {
+            requestAnimationFrame(onStart);
+        }
         return this;
     }
 
     removeEvents() {
         this.elem.removeEventListener('animationiteration', this.animationiterationListener);
         this.elem.removeEventListener('animationend', this.animationendListener);
+        return this;
+    }
+
+    playNext(callbacks) {
+        const {
+            onIteration, onEnd,
+        } = callbacks;
+        const animationOption = this.queueStore.pop();
+        if (animationOption) {
+            this.play(animationOption, {
+                onEnd: this.playNext.bind(this, callbacks),
+                onIteration,
+            });
+        } else if (onEnd) {
+            onEnd();
+        }
+    }
+
+    queue(animationOptions, callbacks) {
+        const currentQueueLength = this.queueStore.length;
+        const {
+            onBeforeStart, onStart,
+        } = callbacks;
+
+        if (animationOptions.constructor === Array) {
+            this.queueStore = animationOptions.concat(this.queueStore);
+        } else {
+            this.queueStore.unshift(animationOptions);
+        }
+
+        if (!currentQueueLength) {
+            if (onBeforeStart) {
+                onBeforeStart();
+            }
+            this.playNext(callbacks);
+            if (onStart) {
+                requestAnimationFrame(onStart);
+            }
+        }
+        return this;
+    }
+
+    resetQueue() {
+        return new Promise((accept, reject) => {
+            this.removeEvents();
+            this.queueStore = [];
+            this.reset().then(() => {
+                accept();
+            }).catch(reject);
+        });
+    }
+
+    chain(animationOptions, callbacks) {
+        this.resetQueue().then(() => {
+            this.queue(animationOptions, callbacks);
+        });
+        return this;
     }
 
     static playCSS(frameOptions) {
@@ -115,13 +191,13 @@ class Keyframes {
     static generate(frameData) {
         const css = this.generateCSS(frameData);
 
-        const oldFrameIndex = Keyframes.rules.indexOf(frameData.name);
+        const oldFrameIndex = this.constructor.rules.indexOf(frameData.name);
         if (oldFrameIndex > -1) {
-            Keyframes.sheet.deleteRule(oldFrameIndex);
-            delete Keyframes.rules[oldFrameIndex];
+            this.constructor.sheet.deleteRule(oldFrameIndex);
+            delete this.constructor.rules[oldFrameIndex];
         }
-        const ruleIndex = Keyframes.sheet.insertRule(css);
-        Keyframes.rules[ruleIndex] = frameData.name;
+        const ruleIndex = this.constructor.sheet.insertRule(css);
+        this.constructor.rules[ruleIndex] = frameData.name;
     }
 
     static define(frameData) {
@@ -160,8 +236,8 @@ if (typeof document !== 'undefined') {
     const style = document.createElement('style');
     style.setAttribute('id', 'keyframesjs-stylesheet');
     document.head.appendChild(style);
-    Keyframes.sheet = style.sheet;
-    Keyframes.rules = [];
+    this.constructor.sheet = style.sheet;
+    this.constructor.rules = [];
 }
 
 export default Keyframes;
