@@ -57,7 +57,7 @@ describe('Play', () => {
                     });
                 });
             });
-            assert.equal(count, 5);
+            assert.equal(count, 6);
         });
     });
 
@@ -79,12 +79,14 @@ describe('Play', () => {
         it('Should be able to add queue items on the fly', async () => {
             const animation = await browser.evaluate(async () => {
                 return new Promise((resolve, reject) => {
-                    kf.queue(['ball-roll 0.1s'], {
-                        onEnd: () => {
-                            resolve(window.elem.style.animation);
-                        }
+                    kf.resetQueue().then(() => {
+                        kf.queue(['ball-roll 0.1s'], {
+                            onEnd: () => {
+                                resolve(window.elem.style.animation);
+                            }
+                        });
+                        kf.queue('ball-roll2 0.1s');
                     });
-                    kf.queue('ball-roll2 0.1s');
                 });
             });
             assert.equal(animation, 'ball-roll2 0.1s');

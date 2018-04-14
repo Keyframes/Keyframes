@@ -31,8 +31,10 @@ class Keyframes {
     }
 
     play(animationOptions, callbacks) {
-        if (this.elem.style.animationName === animationOptions.name) {
-            this.reset(() => this.play(animationOptions, callbacks));
+        if (this.elem.style.animationName === this.getAnimationName(animationOptions)) {
+            requestAnimationFrame(() => {
+                this.reset().then(() => this.play(animationOptions, callbacks));
+            });
             return this;
         }
 
@@ -116,11 +118,13 @@ class Keyframes {
 
     resetQueue() {
         return new Promise((accept, reject) => {
-            this.removeEvents();
-            this.queueStore = [];
-            this.reset().then(() => {
-                accept();
-            }).catch(reject);
+            requestAnimationFrame(() => {
+                this.removeEvents();
+                this.queueStore = [];
+                this.reset().then(() => {
+                    accept();
+                }).catch(reject);
+            });
         });
     }
 
@@ -129,6 +133,20 @@ class Keyframes {
             this.queue(animationOptions, callbacks);
         });
         return this;
+    }
+
+    getAnimationName(frameOptions) {
+        switch (frameOptions.constructor) {
+        case Array: {
+            return frameOptions.map(this.getAnimationName).join(', ');
+        }
+        case String: {
+            return frameOptions.split(' ')[0];
+        }
+        default: {
+            return frameOptions.name;
+        }
+        }
     }
 
     static playCSS(frameOptions) {
@@ -156,12 +174,12 @@ class Keyframes {
         if (frameOptions.constructor === Array) {
             const frameOptionsStrings = [];
             for (let i = 0; i < frameOptions.length; i += 1) {
-                frameOptionsStrings.push(typeof frameOptions[i] === 'string' ?
+                frameOptionsStrings.push(frameOptions[i].constructor === String ?
                     frameOptions[i] :
                     animObjToStr(frameOptions[i]));
             }
             return frameOptionsStrings.join(', ');
-        } else if (typeof frameOptions === 'string') {
+        } else if (frameOptions.constructor === String) {
             return frameOptions;
         }
 
