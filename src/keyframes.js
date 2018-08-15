@@ -79,12 +79,12 @@ class Keyframes {
         if (frameOptions.constructor === Array) {
             const frameOptionsStrings = [];
             for (let i = 0; i < frameOptions.length; i += 1) {
-                frameOptionsStrings.push(typeof frameOptions[i] === 'string' ?
-                    frameOptions[i] :
-                    animObjToStr(frameOptions[i]));
+                frameOptionsStrings.push(typeof frameOptions[i] === 'string'
+                    ? frameOptions[i]
+                    : animObjToStr(frameOptions[i]));
             }
             return frameOptionsStrings.join(', ');
-        } else if (typeof frameOptions === 'string') {
+        } if (typeof frameOptions === 'string') {
             return frameOptions;
         }
 
