@@ -33,7 +33,7 @@ describe('Play', () => {
                     });
                 });
             });
-            assert.equal(animation, 'ball-roll 0.1s');
+            assert(animation.includes('ball-roll 0.1s'));
         });
 
         it('Should execute callbacks', async () => {
@@ -73,7 +73,7 @@ describe('Play', () => {
                     });
                 });
             });
-            assert.equal(animation, 'ball-roll 0.1s');
+            assert(animation.includes('ball-roll 0.1s'));
         });
 
         it('Should be able to add queue items on the fly', async () => {
@@ -89,7 +89,7 @@ describe('Play', () => {
                     });
                 });
             });
-            assert.equal(animation, 'ball-roll2 0.1s');
+            assert(animation.includes('ball-roll2 0.1s'));
         });
     });
 
@@ -105,7 +105,7 @@ describe('Play', () => {
                     });
                 });
             });
-            assert.equal(animation, 'ball-roll2 0.1s');
+            assert(animation.includes('ball-roll2 0.1s'));
         });
     });
 });
