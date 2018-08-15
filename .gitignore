@@ -24,7 +24,12 @@ ehthumbs.db
 Thumbs.db
 node_modules
 prepros.cfg
+<<<<<<< HEAD
 example/example.dist.js
 dist
 .cache
 .mocha-puppeteer
+=======
+.mocha-puppeteer
+.cache
+>>>>>>> master
