@@ -2,6 +2,12 @@ import Keyframes from '../src/keyframes';
 
 const ball = new Keyframes(document.getElementById('ball'));
 
+// example callback function
+const cbElem = document.getElementById('cb');
+function increment() {
+    cbElem.innerHTML = parseInt(cbElem.innerHTML, 10) + 1;
+}
+
 // Adding a new animation sequences (keyframe)
 Keyframes.define([{
     name: 'ball-move',
@@ -37,13 +43,8 @@ window.resume = () => {
 window.reset = () => {
     // reset keyframe animation
     ball.reset();
+    cbElem.innerHTML = 0;
 };
-
-// example callback function
-const cbElem = document.getElementById('cb');
-function increment() {
-    cbElem.innerHTML = parseInt(cbElem.innerHTML, 10) + 1;
-}
 
 
 window.play = (animation) => {
@@ -51,7 +52,7 @@ window.play = (animation) => {
         switch (animation) {
         case 'normal':
 
-        // move with easing
+            // move with easing
             ball.play({
                 name: 'ball-move',
                 duration: '3s',
@@ -65,13 +66,13 @@ window.play = (animation) => {
             break;
         case 'spin':
 
-        // run spin keyframes using the shorthand method.
+            // run spin keyframes using the shorthand method.
             ball.play('ball-spin 500ms linear 0s 3 normal forwards', increment);
 
             break;
         case 'linear':
 
-        // move with linear timing
+            // move with linear timing
             ball.play({
                 name: 'ball-move',
                 duration: '3s',
@@ -83,7 +84,7 @@ window.play = (animation) => {
             break;
         case 'delay':
 
-        // set a 2 second delay before starting
+            // set a 2 second delay before starting
             ball.play({
                 name: 'ball-move',
                 duration: '3s',
@@ -96,7 +97,7 @@ window.play = (animation) => {
             break;
         case 'once':
 
-        // only play the animation once
+            // only play the animation once
             ball.play({
                 name: 'ball-move',
                 duration: '3s',

@@ -10,6 +10,11 @@ function _interopRequireDefault(obj) {
 }
 
 var ball = new _keyframes.default(document.getElementById('ball'));
+var cbElem = document.getElementById('cb');
+
+function increment() {
+  cbElem.innerHTML = parseInt(cbElem.innerHTML, 10) + 1;
+}
 
 _keyframes.default.define([{
   name: 'ball-move',
@@ -42,13 +47,8 @@ window.resume = function () {
 
 window.reset = function () {
   ball.reset();
+  cbElem.innerHTML = 0;
 };
-
-var cbElem = document.getElementById('cb');
-
-function increment() {
-  cbElem.innerHTML = parseInt(cbElem.innerHTML, 10) + 1;
-}
 
 window.play = function (animation) {
   ball.reset(function () {
