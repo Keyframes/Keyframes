@@ -141,6 +141,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -223,7 +225,7 @@ function () {
     key: "playCSS",
     value: function playCSS(frameOptions) {
       var animObjToStr = function animObjToStr(obj) {
-        var newObj = Object.assign({}, {
+        var newObj = _extends({}, {
           duration: '0s',
           timingFunction: 'ease',
           delay: '0s',
@@ -231,6 +233,7 @@ function () {
           direction: 'normal',
           fillMode: 'forwards'
         }, obj);
+
         return [newObj.name, newObj.duration, newObj.timingFunction, newObj.delay, newObj.iterationCount, newObj.direction, newObj.fillMode].join(' ');
       };
 
@@ -242,7 +245,9 @@ function () {
         }
 
         return frameOptionsStrings.join(', ');
-      } else if (typeof frameOptions === 'string') {
+      }
+
+      if (typeof frameOptions === 'string') {
         return frameOptions;
       }
 
@@ -284,7 +289,7 @@ function () {
         delete Keyframes.rules[oldFrameIndex];
       }
 
-      var ruleIndex = Keyframes.sheet.insertRule(css);
+      var ruleIndex = Keyframes.sheet.insertRule(css, 0);
       Keyframes.rules[ruleIndex] = frameData.name;
     }
   }, {

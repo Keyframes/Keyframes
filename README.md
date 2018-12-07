@@ -1,7 +1,7 @@
 Keyframes
 ===========
 
-![](https://badge.fury.io/gh/Keyframes/Keyframes.svg)
+![](https://badge.fury.io/js/%40keyframes%2Fcore.svg)
 
 Keyframes allows dynamic generation of CSS keyframes with callback events and other niceness.
 
