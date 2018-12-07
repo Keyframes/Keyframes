@@ -1,6 +1,6 @@
 {
   "name": "@keyframes/core",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "Keyframes allows dynamic generation of CSS3 keyframes with callback events and other niceness.",
   "main": "src/keyframes.js",
   "scripts": {
@@ -45,7 +45,9 @@
     "eslint-plugin-react": "^7.11.1",
     "mocha": "^5.2.0",
     "nodemon": "^1.18.3",
-    "uglify-js": "^3.4.7",
+    "uglify-js": "^3.4.7"
+  },
+  "dependencies": {
     "es6-object-assign": "^1.1.0"
   }
 }
