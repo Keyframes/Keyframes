@@ -1,3 +1,5 @@
+require('es6-object-assign/auto');
+
 class Keyframes {
     constructor(elem) {
         this.elem = elem;
@@ -120,7 +122,7 @@ class Keyframes {
             Keyframes.sheet.deleteRule(oldFrameIndex);
             delete Keyframes.rules[oldFrameIndex];
         }
-        const ruleIndex = Keyframes.sheet.insertRule(css);
+        const ruleIndex = Keyframes.sheet.insertRule(css, 0);
         Keyframes.rules[ruleIndex] = frameData.name;
     }
 
