@@ -1,3 +1,5 @@
+require('es6-object-assign/auto');
+
 class Keyframes {
     constructor(elem) {
         this.elem = elem;

@@ -36,7 +36,6 @@
     "@babel/cli": "^7.2.0",
     "@babel/core": "^7.2.0",
     "@babel/preset-env": "^7.2.0",
-    "@babel/plugin-transform-object-assign": "^7.2.0",
     "babelify": "^10.0.0",
     "browserify": "^16.2.3",
     "eslint": "^5.9.0",
@@ -45,7 +44,8 @@
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7.11.1",
     "mocha": "^5.2.0",
-    "nodemon": "^1.18.7",
-    "uglify-js": "^3.4.9"
+    "nodemon": "^1.18.3",
+    "uglify-js": "^3.4.7",
+    "es6-object-assign": "^1.1.0"
   }
 }
