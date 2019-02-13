@@ -1,8 +1,8 @@
 {
   "name": "@keyframes/core",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "Keyframes allows dynamic generation of CSS3 keyframes with callback events and other niceness.",
-  "main": "dist/keyframes.js",
+  "main": "dist/keyframes.es5.js",
   "scripts": {
     "build": "npm run es5 && npm run browserify && npm run minify && npm run buildExample",
     "es5": "babel src/keyframes.js -o dist/keyframes.es5.js --no-comments",
@@ -46,8 +46,5 @@
     "mocha": "^5.2.0",
     "nodemon": "^1.18.3",
     "uglify-js": "^3.4.7"
-  },
-  "dependencies": {
-    "es6-object-assign": "^1.1.0"
   }
 }
