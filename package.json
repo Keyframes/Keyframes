@@ -1,8 +1,8 @@
 {
   "name": "@keyframes/core",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Keyframes allows dynamic generation of CSS3 keyframes with callback events and other niceness.",
-  "main": "src/keyframes.js",
+  "main": "dist/keyframes.js",
   "scripts": {
     "build": "npm run es5 && npm run browserify && npm run minify && npm run buildExample",
     "es5": "babel src/keyframes.js -o dist/keyframes.es5.js --no-comments",
