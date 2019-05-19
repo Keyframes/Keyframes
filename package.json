@@ -33,19 +33,19 @@
   },
   "homepage": "https://github.com/Keyframes/Keyframes",
   "devDependencies": {
-    "@babel/cli": "^7.2.0",
-    "@babel/core": "^7.2.0",
-    "@babel/preset-env": "^7.2.0",
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.4",
     "@babel/plugin-transform-object-assign": "^7.2.0",
+    "@babel/preset-env": "^7.4.4",
     "babelify": "^10.0.0",
     "browserify": "^16.2.3",
-    "eslint": "^5.9.0",
+    "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-jsx-a11y": "^6.1.2",
-    "eslint-plugin-react": "^7.11.1",
-    "mocha": "^5.2.0",
-    "nodemon": "^1.18.3",
-    "uglify-js": "^3.4.7"
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-react": "^7.13.0",
+    "mocha": "^6.1.4",
+    "nodemon": "^1.19.0",
+    "uglify-js": "^3.5.13"
   }
 }
