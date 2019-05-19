@@ -19,6 +19,15 @@ const preload = async () => {
     });
 };
 
+const animationIncludesTest = (haystack, needles) => {
+    for (let i = 0; i < needles.length; i += 1) {
+        if (haystack.includes(needles[i])) {
+            return true;
+        }
+    }
+    return false;
+};
+
 describe('Play', () => {
     
     describe('#play()', () => {
@@ -33,7 +42,7 @@ describe('Play', () => {
                     });
                 });
             });
-            assert(animation.includes('ball-roll 0.1s'));
+            assert(animationIncludesTest(animation, ['ball-roll', '0.1s']));
         });
 
         it('Should execute callbacks', async () => {
@@ -73,7 +82,7 @@ describe('Play', () => {
                     });
                 });
             });
-            assert(animation.includes('ball-roll 0.1s'));
+            assert(animationIncludesTest(animation, ['ball-roll', '0.1s']));
         });
 
         it('Should be able to add queue items on the fly', async () => {
@@ -89,7 +98,7 @@ describe('Play', () => {
                     });
                 });
             });
-            assert(animation.includes('ball-roll2 0.1s'));
+            assert(animationIncludesTest(animation, ['ball-roll2', '0.1s']));
         });
     });
 
@@ -105,7 +114,7 @@ describe('Play', () => {
                     });
                 });
             });
-            assert(animation.includes('ball-roll2 0.1s'));
+            assert(animationIncludesTest(animation, ['ball-roll2', '0.1s']));
         });
     });
 });
