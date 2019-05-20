@@ -7,5 +7,12 @@ describe('Core', () => {
             });
             assert.notEqual(typeof kf, 'undefined');
         }).timeout(5000);
+
+        it('Should test if the browser supports keyframes', async () => {
+            const supported = await browser.evaluate(() => {
+                return window.Keyframes.isSupported();
+            });
+            assert(supported);
+        });
     });
 });

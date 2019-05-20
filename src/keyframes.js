@@ -1,23 +1,25 @@
+const wait = () => new Promise((accept) => {
+    requestAnimationFrame(() => {
+        accept();
+    });
+});
+
 class Keyframes {
     constructor(elem) {
         this.elem = elem;
         this.queueStore = [];
     }
 
-    isSupported() {
+    static isSupported() {
         return document.body.style.animationName !== undefined;
     }
 
-    reset() {
-        return new Promise((accept) => {
-            this.removeEvents();
-            this.elem.style.animationPlayState = 'running';
-            this.elem.style.animation = 'none';
-
-            requestAnimationFrame(() => {
-                accept();
-            });
-        });
+    async reset() {
+        this.removeEvents();
+        this.elem.style.animationPlayState = 'running';
+        this.elem.style.animation = 'none';
+        await wait();
+        return this;
     }
 
     pause() {
@@ -32,8 +34,9 @@ class Keyframes {
 
     play(animationOptions, callbacks) {
         if (this.elem.style.animationName === this.getAnimationName(animationOptions)) {
-            requestAnimationFrame(() => {
-                this.reset().then(() => this.play(animationOptions, callbacks));
+            requestAnimationFrame(async () => {
+                await this.reset();
+                this.play(animationOptions, callbacks);
             });
             return this;
         }
@@ -90,7 +93,10 @@ class Keyframes {
 
     updateCallbacks(callbacks) {
         if (callbacks) {
-            this.callbacks = Object.assign({}, this.callbacks, callbacks);
+            this.callbacks = {
+                ...this.callbacks,
+                ...callbacks,
+            };
         }
     }
 
@@ -116,22 +122,17 @@ class Keyframes {
         return this;
     }
 
-    resetQueue() {
-        return new Promise((accept, reject) => {
-            requestAnimationFrame(() => {
-                this.removeEvents();
-                this.queueStore = [];
-                this.reset().then(() => {
-                    accept();
-                }).catch(reject);
-            });
-        });
+    async resetQueue() {
+        await wait();
+        this.removeEvents();
+        this.queueStore = [];
+        await this.reset();
+        return this;
     }
 
-    chain(animationOptions, callbacks) {
-        this.resetQueue().then(() => {
-            this.queue(animationOptions, callbacks);
-        });
+    async chain(animationOptions, callbacks) {
+        await this.resetQueue();
+        this.queue(animationOptions, callbacks);
         return this;
     }
 
@@ -150,15 +151,16 @@ class Keyframes {
     }
 
     static playCSS(frameOptions) {
-        const animObjToStr = function (obj) {
-            const newObj = Object.assign({}, {
+        const animObjToStr = (obj) => {
+            const newObj = {
                 duration: '0s',
                 timingFunction: 'ease',
                 delay: '0s',
                 iterationCount: 1,
                 direction: 'normal',
                 fillMode: 'forwards',
-            }, obj);
+                ...obj,
+            };
 
             return [
                 newObj.name,
@@ -174,12 +176,12 @@ class Keyframes {
         if (frameOptions.constructor === Array) {
             const frameOptionsStrings = [];
             for (let i = 0; i < frameOptions.length; i += 1) {
-                frameOptionsStrings.push(frameOptions[i].constructor === String ?
-                    frameOptions[i] :
-                    animObjToStr(frameOptions[i]));
+                frameOptionsStrings.push(frameOptions[i].constructor === String
+                    ? frameOptions[i]
+                    : animObjToStr(frameOptions[i]));
             }
             return frameOptionsStrings.join(', ');
-        } else if (frameOptions.constructor === String) {
+        } if (frameOptions.constructor === String) {
             return frameOptions;
         }
 
