@@ -245,12 +245,16 @@ Changelog
 * Reset now uses `requestAnimationFrame` instead of timeouts.
 * Allow an array of plugins to be added
 * Code reduction.
+
 **1.1.0**
 * Use `insertRule` to add keyframes to a single style tag in the header.
+
 **1.0.7**
 * Add playCSS and defineCSS generation functions
+
 **1.0.3**
 * Make it a module
 * Add plugin function
+
 **1.0.0**
 * Vanilla project initiated
