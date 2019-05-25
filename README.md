@@ -237,6 +237,9 @@ See other plugins that allow for spritesheets & more complex movement paths: htt
 
 Changelog
 ---------
+**2.0.0**
+* #1 Queue/Chaining
+* #9 Js Style keys
 **1.1.1**
 * Reset now uses `requestAnimationFrame` instead of timeouts.
 * Allow an array of plugins to be added
