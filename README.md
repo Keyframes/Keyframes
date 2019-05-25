@@ -240,6 +240,7 @@ Changelog
 **2.0.0**
 * https://github.com/Keyframes/Keyframes/issues/1 Queue/Chaining
 * https://github.com/Keyframes/Keyframes/issues/9 Js Style keys
+
 **1.1.1**
 * Reset now uses `requestAnimationFrame` instead of timeouts.
 * Allow an array of plugins to be added
