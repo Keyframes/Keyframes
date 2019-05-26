@@ -12,5 +12,9 @@
         "class-methods-use-this": 0,
         "no-debugger": 0,
         "no-fallthrough": 0
+    },
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
     }
 }

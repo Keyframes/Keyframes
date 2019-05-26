@@ -1,3 +1,5 @@
+// import jsToCss from './objToCss';
+
 const wait = () => new Promise((accept) => {
     requestAnimationFrame(() => {
         accept();
@@ -253,7 +255,7 @@ class Keyframes {
     }
 }
 
-if (typeof document !== 'undefined') {
+if (typeof window !== 'undefined') {
     const style = document.createElement('style');
     style.setAttribute('id', 'keyframesjs-stylesheet');
     document.head.appendChild(style);

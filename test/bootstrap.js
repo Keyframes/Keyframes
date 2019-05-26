@@ -3,7 +3,8 @@ const path = require('path');
 
 // puppeteer options
 const opts = {
-  headless: true
+  headless: true,
+  args: ['--no-sandbox', '--disable-setuid-sandbox']
 };
 
 let chrome;

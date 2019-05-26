@@ -4,7 +4,7 @@
   "description": "Keyframes allows dynamic generation of CSS3 keyframes with callback events and other niceness.",
   "main": "src/keyframes.js",
   "scripts": {
-    "prepare": "npm run build",
+    "prepare": "mkdir -p dist && npm run build",
     "build": "npm run buildMain && npm run buildExample",
     "buildMain": "npm run es5 && npm run browserify && npm run minify",
     "es5": "babel src/keyframes.js -o dist/keyframes.es5.js --no-comments",
@@ -54,5 +54,9 @@
     "simple-headless-chrome": "^4.3.10",
     "uglify-js": "^3.5.13",
     "zombie": "^6.1.4"
+  },
+  "dependencies": {
+    "add-px-to-style": "^1.0.0",
+    "hyphenate-style-name": "^1.0.3"
   }
 }

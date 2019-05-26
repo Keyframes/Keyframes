@@ -39,10 +39,10 @@ Defining keyframes happens before any any animation logic takes place. The CSS i
 ```javascript
 Keyframes.define([{
     name: 'trapdoor-sequence',
-    '0%': {'height': '70px'},
-    '30%': {'height': '10px'},
-    '60%': {'height': '30px'},
-    '100%': {'height': '10px'}
+    '0%': {height: 70},
+    '30%': {height: 10},
+    '60%': {height: 30},
+    '100%': {height: 10}
 }]);
 ```
 
@@ -52,10 +52,10 @@ Keyframes.define([{
 Keyframes.define({
     name: 'ball-roll',
     from: {
-        'transform': 'rotate(0deg)'
+        transform: 'rotate(0deg)'
     },
     to: {
-        'transform': 'rotate(360deg)'
+        transform: 'rotate(360deg)'
     }
 });
 ```
@@ -66,24 +66,24 @@ Keyframes.define({
 Keyframes.define([{
 	name: 'roll-clockwise',
 	'0%': {
-	    'margin-left' : '0px',
-	    'background-color' : 'red',
-	    'transform' : 'rotate(0deg)'
+	    marginLeft: 0,
+	    backgroundColor: 'red',
+	    transform: 'rotate(0deg)'
 	},
 	'100%': {
-	    'margin-left' : '600px',
-	    'transform' : 'rotate(360deg)'
+	    marginLeft: 600,
+	    transform: 'rotate(360deg)'
 	}
     },{
 	name: 'roll-anti-clockwise',
 	'0%': {
-	    'margin-left' : '0px',
-	    'background-color' : 'red',
-	    'transform' : 'rotate(0deg)'
+	    marginLeft: 0,
+	    backgroundColor: 'red',
+	    transform: 'rotate(0deg)'
 	},
 	'100%': {
-	    'margin-left' : '600px',
-	    'transform' : 'rotate(-360deg)'
+	    marginLeft: 600,
+	    transform: 'rotate(-360deg)'
 	}
     }
 ]);
@@ -94,11 +94,11 @@ Keyframes.define([{
 *Gives resemblance to CSS styling definitions*
 
 ```javascript
-var shake_start = {'transform': 'translate(0px)'};
-var shake_odd1 = {'transform': 'translate(-10px, -10px)'};
-var shake_even1 = {'transform': 'translate(10px, 10px)'};
-var shake_odd2 = {'transform': 'translate(10px, -10px)'};
-var shake_even2 = {'transform': 'translate(-10px, 10px)'};
+var shake_start = {transform: 'translate(0px)'};
+var shake_odd1 = {transform: 'translate(-10px, -10px)'};
+var shake_even1 = {transform: 'translate(10px, 10px)'};
+var shake_odd2 = {transform: 'translate(10px, -10px)'};
+var shake_even2 = {transform: 'translate(-10px, 10px)'};
 
 Keyframes.define([{
 	name: 'crazy',
@@ -125,10 +125,10 @@ Keyframes.define([{
     name: 'roll-clockwise',
     media: 'screen and (max-width: 700px)',
     from: {
-        'margin-left' : '0px'
+        marginLeft: 0
     },
     to: {
-        'margin-left' : '600px'
+        marginLeft: 600
     }
     }
 ]);
