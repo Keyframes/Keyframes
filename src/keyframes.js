@@ -231,8 +231,8 @@ class Keyframes {
             this.sheet.deleteRule(oldFrameIndex);
             delete this.rules[oldFrameIndex];
         }
-        const ruleIndex = this.sheet.insertRule(css);
-        this.rules[ruleIndex] = frameData.name;
+        const ruleIndex = Keyframes.sheet.insertRule(css, 0);
+        Keyframes.rules[ruleIndex] = frameData.name;
     }
 
     static define(frameData) {

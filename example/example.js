@@ -1,6 +1,8 @@
 import Keyframes from '../src/keyframes';
 
 const ball = new Keyframes(document.getElementById('ball'));
+
+// example callback function
 const cbElem = document.getElementById('cb');
 
 // Adding a new animation sequences (keyframe)
@@ -39,13 +41,13 @@ window.reset = () => {
     // reset keyframe animation
     cbElem.innerHTML = 0;
     ball.reset();
+    cbElem.innerHTML = 0;
 };
 
 // example callback function
 function increment() {
     cbElem.innerHTML = parseInt(cbElem.innerHTML, 10) + 1;
 }
-
 
 window.play = (animation) => {
     switch (animation) {

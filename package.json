@@ -2,7 +2,7 @@
   "name": "@keyframes/core",
   "version": "2.0.0",
   "description": "Keyframes allows dynamic generation of CSS3 keyframes with callback events and other niceness.",
-  "main": "src/keyframes.js",
+  "main": "dist/keyframes.es5.js",
   "scripts": {
     "prepare": "mkdir -p dist && npm run build",
     "build": "npm run buildMain && npm run buildExample",

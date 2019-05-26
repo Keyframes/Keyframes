@@ -5,12 +5,12 @@ const preload = async () => {
         Keyframes.define([{
             name: 'ball-roll',
             from: {
-                'transform': 'rotate(0deg)'
+                transform: 'rotate(0deg)'
             }
         }, {
             name: 'ball-roll2',
             from: {
-                'transform': 'rotate(5deg)'
+                transform: 'rotate(5deg)'
             }
         }]);
         window.elem = document.createElement('div');
