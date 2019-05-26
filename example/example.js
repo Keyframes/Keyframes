@@ -7,13 +7,13 @@ const cbElem = document.getElementById('cb');
 Keyframes.define([{
     name: 'ball-move',
     '0%': {
-        'margin-left': '0px',
+        marginLeft: 0,
     },
     '50%': {
-        'margin-left': '600px',
+        marginLeft: 600,
     },
     '100%': {
-        'margin-left': '0px',
+        marginLeft: 0,
     },
 }, {
     name: 'ball-spin',

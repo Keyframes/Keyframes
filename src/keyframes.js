@@ -1,10 +1,26 @@
-// import jsToCss from './objToCss';
+import addPx from 'add-px-to-style';
+import hyphenate from 'hyphenate-style-name';
 
 const wait = () => new Promise((accept) => {
     requestAnimationFrame(() => {
         accept();
     });
 });
+
+const objToCss = (obj) => {
+    const keys = Object.keys(obj)
+    if (!keys.length) { return ''; }
+    let i, result = '';
+    const len = keys.length;
+
+    for (i = 0; i < len; i++) {
+        const key = keys[i]
+        const val = obj[key]
+        result += hyphenate(key) + ':' + addPx(key, val) + ';'
+    }
+
+    return result
+};
 
 class Keyframes {
     constructor(elem) {
@@ -194,13 +210,9 @@ class Keyframes {
         let css = `@keyframes ${frameData.name} {`;
         for (const key in frameData) {
             if (key !== 'name' && key !== 'media' && key !== 'complete') {
-                css += `${key} {`;
-
-                for (const property in frameData[key]) {
-                    css += `${property}:${frameData[key][property]};`;
-                }
-
-                css += '}';
+                
+                const cssRuleObject = objToCss(frameData[key]);
+                css += `${key} {${cssRuleObject}}`;
             }
         }
         css += '}';
