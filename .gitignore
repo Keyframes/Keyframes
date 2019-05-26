@@ -24,5 +24,7 @@ ehthumbs.db
 Thumbs.db
 node_modules
 prepros.cfg
-.mocha-puppeteer
+example/example.dist.js
+dist
 .cache
+.mocha-puppeteer

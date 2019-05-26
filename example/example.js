@@ -4,21 +4,18 @@ const ball = new Keyframes(document.getElementById('ball'));
 
 // example callback function
 const cbElem = document.getElementById('cb');
-function increment() {
-    cbElem.innerHTML = parseInt(cbElem.innerHTML, 10) + 1;
-}
 
 // Adding a new animation sequences (keyframe)
 Keyframes.define([{
     name: 'ball-move',
     '0%': {
-        'margin-left': '0px',
+        marginLeft: 0,
     },
     '50%': {
-        'margin-left': '600px',
+        marginLeft: 600,
     },
     '100%': {
-        'margin-left': '0px',
+        marginLeft: 0,
     },
 }, {
     name: 'ball-spin',
@@ -42,106 +39,117 @@ window.resume = () => {
 
 window.reset = () => {
     // reset keyframe animation
+    cbElem.innerHTML = 0;
     ball.reset();
     cbElem.innerHTML = 0;
 };
 
+// example callback function
+function increment() {
+    cbElem.innerHTML = parseInt(cbElem.innerHTML, 10) + 1;
+}
 
 window.play = (animation) => {
-    ball.reset(() => {
-        switch (animation) {
-        case 'normal':
+    switch (animation) {
+    case 'normal':
 
-            // move with easing
-            ball.play({
-                name: 'ball-move',
-                duration: '3s',
-                timingFunction: 'ease',
-                iterationCount: 'infinite',
-                direction: 'normal',
-                fillMode: 'forwards',
-                complete: increment,
-            });
+        // move with easing
+        ball.play({
+            name: 'ball-move',
+            duration: '3s',
+            timingFunction: 'ease',
+            iterationCount: 'infinite',
+            direction: 'normal',
+            fillMode: 'forwards',
+        }, {
+            onIteration: increment,
+            onEnd: increment,
+        });
 
-            break;
-        case 'spin':
+        break;
+    case 'spin':
 
-            // run spin keyframes using the shorthand method.
-            ball.play('ball-spin 500ms linear 0s 3 normal forwards', increment);
+        // run spin keyframes using the shorthand method.
+        ball.play('ball-spin 500ms linear 0s 3 normal forwards', {
+            onIteration: increment,
+            onEnd: increment,
+        });
 
-            break;
-        case 'linear':
+        break;
+    case 'linear':
 
-            // move with linear timing
-            ball.play({
-                name: 'ball-move',
-                duration: '3s',
-                timingFunction: 'linear',
-                iterationCount: 'infinite',
-                complete: increment,
-            });
+        // move with linear timing
+        ball.play({
+            name: 'ball-move',
+            duration: '3s',
+            timingFunction: 'linear',
+            iterationCount: 'infinite',
+        }, {
+            onIteration: increment,
+            onEnd: increment,
+        });
 
-            break;
-        case 'delay':
+        break;
+    case 'delay':
 
-            // set a 2 second delay before starting
-            ball.play({
-                name: 'ball-move',
-                duration: '3s',
-                timingFunction: 'linear',
-                delay: '3s',
-                iterationCount: 'infinite',
-                complete: increment,
-            });
+        // set a 2 second delay before starting
+        ball.play({
+            name: 'ball-move',
+            duration: '3s',
+            timingFunction: 'linear',
+            delay: '3s',
+            iterationCount: 'infinite',
+        }, {
+            onIteration: increment,
+            onEnd: increment,
+        });
 
-            break;
-        case 'once':
+        break;
+    case 'once':
 
-            // only play the animation once
-            ball.play({
-                name: 'ball-move',
-                duration: '3s',
-                timingFunction: 'ease',
-                complete: increment,
-            });
+        // only play the animation once
+        ball.play({
+            name: 'ball-move',
+            duration: '3s',
+            timingFunction: 'ease',
+        }, {
+            onIteration: increment,
+            onEnd: increment,
+        });
 
-            break;
-        case 'multi':
+        break;
+    case 'multi':
         // play multiple animations
-            ball.play(
-                [
-                    'ball-spin 500ms linear 0s 6',
-                    {
-                        name: 'ball-move',
-                        duration: '3s',
-                        timingFunction: 'ease',
-                        iterationCount: 1,
-                    },
-                ],
-                increment,
-            );
-            break;
-        default:
-
-        case 'chained':
-        // play chained animations using callbacks
-            ball.play({
-                name: 'ball-spin',
-                duration: '1s',
-                iterationCount: 1,
-                complete: () => {
-                    increment();
-                    setTimeout(() => ball.play({
-                        name: 'ball-move',
-                        duration: '1s',
-                        iterationCount: 1,
-                        complete: () => {
-                            ball.reset();
-                            increment();
-                        },
-                    }), 1000);
+        ball.play(
+            [
+                'ball-spin 500ms linear 0s 6',
+                {
+                    name: 'ball-move',
+                    duration: '3s',
+                    timingFunction: 'ease',
+                    iterationCount: 1,
                 },
-            });
-        }
-    });
+            ],
+            {
+                onIteration: increment,
+            },
+        );
+        break;
+    default:
+
+    case 'chained':
+        // play chained animations using callbacks
+        ball.chain([{
+            name: 'ball-spin',
+            duration: '1s',
+            iterationCount: 1,
+        }, {
+            name: 'ball-move',
+            duration: '1s',
+            iterationCount: 1,
+        }], {
+            onEnd: increment,
+        });
+        break;
+    }
 };
