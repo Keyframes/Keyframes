@@ -27,17 +27,17 @@ Keyframes.define([{
     },
 }] as KeyframeObject[]);
 
-(<any>window).pause = () => {
+(window as any).pause = () => {
     // freeze keyframe animation and kill callback
     ball.pause();
 };
 
-(<any>window).resume = () => {
+(window as any).resume = () => {
     // resume keyframe animation
     ball.resume();
 };
 
-(<any>window).reset = () => {
+(window as any).reset = () => {
     // reset keyframe animation
     cbElem.innerHTML = '0';
     ball.reset();
@@ -51,107 +51,107 @@ function increment() {
     }
 }
 
-(<any>window).play = (animation: string) => {
+(window as any).play = (animation: string) => {
     switch (animation) {
-    case 'normal':
+        case 'normal':
 
-        // move with easing
-        ball.play({
-            name: 'ball-move',
-            duration: '3s',
-            timingFunction: 'ease',
-            iterationCount: 'infinite',
-            direction: 'normal',
-            fillMode: 'forwards',
-        } as KeyframeAnimationObject, {
-            onIteration: increment,
-            onEnd: increment,
-        });
-
-        break;
-    case 'spin':
-
-        // run spin keyframes using the shorthand method.
-        ball.play('ball-spin 500ms linear 0s 3 normal forwards', {
-            onIteration: increment,
-            onEnd: increment,
-        });
-
-        break;
-    case 'linear':
-
-        // move with linear timing
-        ball.play({
-            name: 'ball-move',
-            duration: '3s',
-            timingFunction: 'linear',
-            iterationCount: 'infinite',
-        } as KeyframeAnimationObject, {
-            onIteration: increment,
-            onEnd: increment,
-        });
-
-        break;
-    case 'delay':
-
-        // set a 2 second delay before starting
-        ball.play({
-            name: 'ball-move',
-            duration: '3s',
-            timingFunction: 'linear',
-            delay: '3s',
-            iterationCount: 'infinite',
-        } as KeyframeAnimationObject, {
-            onIteration: increment,
-            onEnd: increment,
-        });
-
-        break;
-    case 'once':
-
-        // only play the animation once
-        ball.play({
-            name: 'ball-move',
-            duration: '3s',
-            timingFunction: 'ease',
-        } as KeyframeAnimationObject, {
-            onIteration: increment,
-            onEnd: increment,
-        });
-
-        break;
-    case 'multi':
-        // play multiple animations
-        ball.play(
-            [
-                'ball-spin 500ms linear 0s 6',
-                {
-                    name: 'ball-move',
-                    duration: '3s',
-                    timingFunction: 'ease',
-                    iterationCount: 1,
-                },
-            ] as KeyframeAnimationOptionArray,
-            {
+            // move with easing
+            ball.play({
+                name: 'ball-move',
+                duration: '3s',
+                timingFunction: 'ease',
+                iterationCount: 'infinite',
+                direction: 'normal',
+                fillMode: 'forwards',
+            } as KeyframeAnimationObject, {
                 onIteration: increment,
-            },
-        );
-        break;
-    default:
+                onEnd: increment,
+            });
 
-    case 'chained':
+            break;
+        case 'spin':
+
+            // run spin keyframes using the shorthand method.
+            ball.play('ball-spin 500ms linear 0s 3 normal forwards', {
+                onIteration: increment,
+                onEnd: increment,
+            });
+
+            break;
+        case 'linear':
+
+            // move with linear timing
+            ball.play({
+                name: 'ball-move',
+                duration: '3s',
+                timingFunction: 'linear',
+                iterationCount: 'infinite',
+            } as KeyframeAnimationObject, {
+                onIteration: increment,
+                onEnd: increment,
+            });
+
+            break;
+        case 'delay':
+
+            // set a 2 second delay before starting
+            ball.play({
+                name: 'ball-move',
+                duration: '3s',
+                timingFunction: 'linear',
+                delay: '3s',
+                iterationCount: 'infinite',
+            } as KeyframeAnimationObject, {
+                onIteration: increment,
+                onEnd: increment,
+            });
+
+            break;
+        case 'once':
+
+            // only play the animation once
+            ball.play({
+                name: 'ball-move',
+                duration: '3s',
+                timingFunction: 'ease',
+            } as KeyframeAnimationObject, {
+                onIteration: increment,
+                onEnd: increment,
+            });
+
+            break;
+        case 'multi':
+        // play multiple animations
+            ball.play(
+                [
+                    'ball-spin 500ms linear 0s 6',
+                    {
+                        name: 'ball-move',
+                        duration: '3s',
+                        timingFunction: 'ease',
+                        iterationCount: 1,
+                    },
+                ] as KeyframeAnimationOptionArray,
+                {
+                    onIteration: increment,
+                },
+            );
+            break;
+        default:
+
+        case 'chained':
         // play chained animations using callbacks
-        ball.chain([{
-            name: 'ball-spin',
-            duration: '1s',
-            iterationCount: 1,
-        }, {
-            name: 'ball-move',
-            duration: '1s',
-            iterationCount: 1,
-        }] as KeyframeAnimationOptionArray, {
-            onEnd: increment,
-        });
-        break;
+            ball.chain([{
+                name: 'ball-spin',
+                duration: '1s',
+                iterationCount: 1,
+            }, {
+                name: 'ball-move',
+                duration: '1s',
+                iterationCount: 1,
+            }] as KeyframeAnimationOptionArray, {
+                onEnd: increment,
+            });
+            break;
     }
 };

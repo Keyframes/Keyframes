@@ -258,7 +258,7 @@ var objToCss = function (obj) {
     }
     var result = '';
     for (var key in obj) {
-        result += hyphenate_style_name_1.default(key) + ':' + add_px_to_style_1.default(key, obj[key]) + ';';
+        result += hyphenate_style_name_1.default(key) + ":" + add_px_to_style_1.default(key, obj[key]) + ";";
     }
     return result;
 };

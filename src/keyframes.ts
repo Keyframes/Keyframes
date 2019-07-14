@@ -1,7 +1,7 @@
 import addPx from 'add-px-to-style';
 import hyphenate from 'hyphenate-style-name';
 
-const wait = () => new Promise((accept) => {
+const wait = (): Promise<void> => new Promise(accept => {
     requestAnimationFrame(() => {
         accept();
     });
@@ -9,15 +9,15 @@ const wait = () => new Promise((accept) => {
 
 export interface KeyframeAnimationObject {
     name: string;
-    duration: string;
-    timingFunction: string;
-    delay: string;
-    iterationCount: string;
-    direction: string;
-    fillMode: string;
+    duration?: string;
+    timingFunction?: string;
+    delay?: string;
+    iterationCount?: string;
+    direction?: string;
+    fillMode?: string;
 }
 
-export type KeyframeAnimationOptionArray = Array<KeyframeAnimationObject | string | unknown>;
+export type KeyframeAnimationOptionArray = (KeyframeAnimationObject | string | unknown)[];
 export type KeyframeAnimationOptions = KeyframeAnimationOptionArray | KeyframeAnimationObject | string;
 
 export type KeyframeObject = {
@@ -38,8 +38,6 @@ interface KeyframeCallbacks {
     onEnd?: VoidFunction;
 }
 
-type KeyframePlugin = (kf: typeof Keyframes) => void;
-
 const voidFunction = () => {};
 
 const objToCss = (obj: CSSStyleDeclaration) => {
@@ -47,29 +45,32 @@ const objToCss = (obj: CSSStyleDeclaration) => {
     let result = '';
 
     for (const key in obj) {
-        result += hyphenate(key) + ':' + addPx(key, obj[key]) + ';'
+        result += `${hyphenate(key)}:${addPx(key, obj[key])};`;
     }
 
     return result;
 };
 
 class Keyframes {
-
     static sheet: CSSStyleSheet;
-    static rules: Array<string>;
+
+    static rules: string[];
 
     mountedElement: HTMLElement;
-    queueStore: Array<any> = [];
+
+    queueStore: KeyframeAnimationOptionArray = [];
+
     callbacks: KeyframeCallbacks = {
         onStart: voidFunction,
         onBeforeStart: voidFunction,
         onIteration: voidFunction,
         onEnd: voidFunction,
-    }
+    };
 
     animationendListener: EventListener = voidFunction;
+
     animationiterationListener: EventListener = voidFunction;
-    
+
     constructor(elem: HTMLElement) {
         this.mountedElement = elem;
     }
@@ -147,7 +148,7 @@ class Keyframes {
     }
 
     playNext() {
-        const animationOption = this.queueStore.pop();
+        const animationOption = this.queueStore.pop() as KeyframeAnimationOptions;
         if (animationOption) {
             this.play(animationOption, {
                 onEnd: () => this.playNext(),
@@ -172,7 +173,7 @@ class Keyframes {
         this.updateCallbacks(callbacks);
 
         if (animationOptions.constructor === Array) {
-            this.queueStore = (animationOptions as Array<KeyframeAnimationObject>).reverse().concat(this.queueStore);
+            this.queueStore = (animationOptions as KeyframeAnimationOptionArray).reverse().concat(this.queueStore);
         } else {
             this.queueStore.unshift(animationOptions);
         }
@@ -205,15 +206,15 @@ class Keyframes {
 
     getAnimationName(animationObject: KeyframeAnimationOptions): string {
         switch (animationObject.constructor) {
-        case Array: {
-            return (animationObject as KeyframeAnimationObject[]).map(this.getAnimationName).join(', ');
-        }
-        case String: {
-            return (animationObject as string).split(' ')[0];
-        }
-        default: {
-            return (animationObject as KeyframeAnimationObject).name;
-        }
+            case Array: {
+                return (animationObject as KeyframeAnimationObject[]).map(this.getAnimationName).join(', ');
+            }
+            case String: {
+                return (animationObject as string).split(' ')[0];
+            }
+            default: {
+                return (animationObject as KeyframeAnimationObject).name;
+            }
         }
     }
 
@@ -260,7 +261,6 @@ class Keyframes {
         let css = `@keyframes ${frameData.name} {`;
         for (const key in frameData) {
             if (key !== 'name' && key !== 'media' && key !== 'complete') {
-                
                 const cssRuleObject = objToCss(frameData[key] as CSSStyleDeclaration);
                 css += `${key} {${cssRuleObject}}`;
             }
@@ -317,13 +317,15 @@ class Keyframes {
     }
 }
 
+type KeyframePlugin = (kf: typeof Keyframes) => void;
+
 if (typeof window !== 'undefined') {
     const style = document.createElement('style');
     style.setAttribute('id', 'keyframesjs-stylesheet');
     document.head.appendChild(style);
     Keyframes.sheet = style.sheet as CSSStyleSheet;
     Keyframes.rules = [];
-    (<any>window).Keyframes = Keyframes;
+    (window as any).Keyframes = Keyframes;
 }
 
 export default Keyframes;
