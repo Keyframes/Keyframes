@@ -6,13 +6,13 @@ const ball = new Keyframes(document.getElementById('ball') as HTMLElement);
 const cbElem = document.getElementById('cb') as HTMLElement;
 
 // Adding a new animation sequences (keyframe)
-const ballMoveAnimation: KeyframeObject[] = [{
+Keyframes.define([{
     name: 'ball-move',
     '0%': {
         marginLeft: '0',
     },
     '50%': {
-        marginLeft: '600',
+        marginLeft: '600px',
     },
     '100%': {
         marginLeft: '0',
@@ -25,9 +25,7 @@ const ballMoveAnimation: KeyframeObject[] = [{
     to: {
         transform: 'rotate(450deg)',
     },
-}];
-
-Keyframes.define(ballMoveAnimation);
+}] as KeyframeObject[]);
 
 (<any>window).pause = () => {
     // freeze keyframe animation and kill callback

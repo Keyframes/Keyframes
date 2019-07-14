@@ -7,13 +7,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var keyframes_1 = __importDefault(require("../src/keyframes"));
 var ball = new keyframes_1.default(document.getElementById('ball'));
 var cbElem = document.getElementById('cb');
-var ballMoveAnimation = [{
+keyframes_1.default.define([{
         name: 'ball-move',
         '0%': {
             marginLeft: '0',
         },
         '50%': {
-            marginLeft: '600',
+            marginLeft: '600px',
         },
         '100%': {
             marginLeft: '0',
@@ -26,8 +26,7 @@ var ballMoveAnimation = [{
         to: {
             transform: 'rotate(450deg)',
         },
-    }];
-keyframes_1.default.define(ballMoveAnimation);
+    }]);
 window.pause = function () {
     ball.pause();
 };

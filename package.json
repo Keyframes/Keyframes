@@ -13,7 +13,7 @@
     "cleanup": "rimraf dist/*.tmp-*",
     "buildExample": "npm run browserifyExample && npm run cleanup",
     "browserifyExample": "browserify example/example.ts -o example/example.dist.js -p [ tsify --noImplicitAny ]",
-    "watch": "nodemon --watch example/example.js --watch src --exec 'npm run build && npm run buildExample'",
+    "watch": "nodemon --watch example/example.ts --watch src --exec 'npm run build && npm run buildExample'",
     "versions": "browserify --version && tsc --version && node --version",
     "test": "npm run buildMain && mocha test/bootstrap.js --recursive test"
   },
