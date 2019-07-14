@@ -276,10 +276,10 @@ class Keyframes {
     static generate(frameData: KeyframeObject) {
         const css = this.generateCSS(frameData);
 
-        const oldFrameIndex = Keyframes.rules.indexOf(frameData.name as string);
+        const oldFrameIndex = this.rules.indexOf(frameData.name as string);
         if (oldFrameIndex > -1) {
-            Keyframes.sheet.deleteRule(oldFrameIndex);
-            delete Keyframes.rules[oldFrameIndex];
+            this.sheet.deleteRule(oldFrameIndex);
+            delete this.rules[oldFrameIndex];
         }
         const ruleIndex = Keyframes.sheet.insertRule(css, 0);
         Keyframes.rules[ruleIndex] = frameData.name as string;
