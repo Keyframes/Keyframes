@@ -277,10 +277,10 @@ var Keyframes = (function () {
     };
     Keyframes.generate = function (frameData) {
         var css = this.generateCSS(frameData);
-        var oldFrameIndex = this.rules.indexOf(frameData.name);
+        var oldFrameIndex = Keyframes.rules.indexOf(frameData.name);
         if (oldFrameIndex > -1) {
-            this.sheet.deleteRule(oldFrameIndex);
-            delete this.rules[oldFrameIndex];
+            Keyframes.sheet.deleteRule(oldFrameIndex);
+            delete Keyframes.rules[oldFrameIndex];
         }
         var ruleIndex = Keyframes.sheet.insertRule(css, 0);
         Keyframes.rules[ruleIndex] = frameData.name;
