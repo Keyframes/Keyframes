@@ -1,21 +1,21 @@
-import Keyframes from '../src/keyframes';
+import Keyframes, { KeyframeObject, KeyframeAnimationObject, KeyframeAnimationOptionArray } from '../src/keyframes';
 
-const ball = new Keyframes(document.getElementById('ball'));
+const ball = new Keyframes(document.getElementById('ball') as HTMLElement);
 
 // example callback function
-const cbElem = document.getElementById('cb');
+const cbElem = document.getElementById('cb') as HTMLElement;
 
 // Adding a new animation sequences (keyframe)
-Keyframes.define([{
+const ballMoveAnimation: KeyframeObject[] = [{
     name: 'ball-move',
     '0%': {
-        marginLeft: 0,
+        marginLeft: '0',
     },
     '50%': {
-        marginLeft: 600,
+        marginLeft: '600',
     },
     '100%': {
-        marginLeft: 0,
+        marginLeft: '0',
     },
 }, {
     name: 'ball-spin',
@@ -25,31 +25,35 @@ Keyframes.define([{
     to: {
         transform: 'rotate(450deg)',
     },
-}]);
+}];
 
-window.pause = () => {
+Keyframes.define(ballMoveAnimation);
+
+(<any>window).pause = () => {
     // freeze keyframe animation and kill callback
     ball.pause();
 };
 
-window.resume = () => {
+(<any>window).resume = () => {
     // resume keyframe animation
     ball.resume();
 };
 
-window.reset = () => {
+(<any>window).reset = () => {
     // reset keyframe animation
-    cbElem.innerHTML = 0;
+    cbElem.innerHTML = '0';
     ball.reset();
-    cbElem.innerHTML = 0;
+    cbElem.innerHTML = '0';
 };
 
 // example callback function
 function increment() {
-    cbElem.innerHTML = parseInt(cbElem.innerHTML, 10) + 1;
+    if (cbElem) {
+        cbElem.innerHTML = `${parseInt(cbElem.innerHTML, 10) + 1}`;
+    }
 }
 
-window.play = (animation) => {
+(<any>window).play = (animation: string) => {
     switch (animation) {
     case 'normal':
 
@@ -61,7 +65,7 @@ window.play = (animation) => {
             iterationCount: 'infinite',
             direction: 'normal',
             fillMode: 'forwards',
-        }, {
+        } as KeyframeAnimationObject, {
             onIteration: increment,
             onEnd: increment,
         });
@@ -84,7 +88,7 @@ window.play = (animation) => {
             duration: '3s',
             timingFunction: 'linear',
             iterationCount: 'infinite',
-        }, {
+        } as KeyframeAnimationObject, {
             onIteration: increment,
             onEnd: increment,
         });
@@ -99,7 +103,7 @@ window.play = (animation) => {
             timingFunction: 'linear',
             delay: '3s',
             iterationCount: 'infinite',
-        }, {
+        } as KeyframeAnimationObject, {
             onIteration: increment,
             onEnd: increment,
         });
@@ -112,7 +116,7 @@ window.play = (animation) => {
             name: 'ball-move',
             duration: '3s',
             timingFunction: 'ease',
-        }, {
+        } as KeyframeAnimationObject, {
             onIteration: increment,
             onEnd: increment,
         });
@@ -129,7 +133,7 @@ window.play = (animation) => {
                     timingFunction: 'ease',
                     iterationCount: 1,
                 },
-            ],
+            ] as KeyframeAnimationOptionArray,
             {
                 onIteration: increment,
             },
@@ -147,7 +151,7 @@ window.play = (animation) => {
             name: 'ball-move',
             duration: '1s',
             iterationCount: 1,
-        }], {
+        }] as KeyframeAnimationOptionArray, {
             onEnd: increment,
         });
         break;
