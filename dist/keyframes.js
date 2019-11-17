@@ -11,10 +11,11 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -56,6 +57,14 @@ var wait = function () { return new Promise(function (accept) {
         accept();
     });
 }); };
+var isBrowser = typeof window !== 'undefined';
+var keyframesSheet;
+if (isBrowser) {
+    var styleElem = document.createElement('style');
+    styleElem.setAttribute('id', 'keyframesjs-stylesheet');
+    document.head.appendChild(styleElem);
+    keyframesSheet = styleElem.sheet;
+}
 var voidFunction = function () { };
 var objToCss = function (obj) {
     if (!Object.keys(obj).length) {
@@ -167,7 +176,7 @@ var Keyframes = (function () {
     };
     Keyframes.prototype.updateCallbacks = function (callbacks) {
         if (callbacks) {
-            this.callbacks = __assign({}, this.callbacks, callbacks);
+            this.callbacks = __assign(__assign({}, this.callbacks), callbacks);
         }
     };
     Keyframes.prototype.queue = function (animationOptions, callbacks) {
@@ -280,9 +289,10 @@ var Keyframes = (function () {
         var oldFrameIndex = Keyframes.rules.indexOf(frameData.name);
         if (oldFrameIndex > -1) {
             Keyframes.sheet.deleteRule(oldFrameIndex);
-            delete Keyframes.rules[oldFrameIndex];
+            Keyframes.rules.splice(oldFrameIndex, 1);
         }
-        var ruleIndex = Keyframes.sheet.insertRule(css, 0);
+        var ruleIndex = (Keyframes.sheet.cssRules || Keyframes.sheet.rules).length;
+        Keyframes.sheet.insertRule(css, ruleIndex);
         Keyframes.rules[ruleIndex] = frameData.name;
     };
     Keyframes.define = function (frameOptions) {
@@ -315,14 +325,11 @@ var Keyframes = (function () {
             pluginFunc(this);
         }
     };
+    Keyframes.sheet = keyframesSheet;
+    Keyframes.rules = [];
     return Keyframes;
 }());
-if (typeof window !== 'undefined') {
-    var style = document.createElement('style');
-    style.setAttribute('id', 'keyframesjs-stylesheet');
-    document.head.appendChild(style);
-    Keyframes.sheet = style.sheet;
-    Keyframes.rules = [];
+if (isBrowser) {
     window.Keyframes = Keyframes;
 }
 exports.default = Keyframes;

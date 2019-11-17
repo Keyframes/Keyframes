@@ -31,11 +31,22 @@ export type KeyframeOptions = KeyframeObject | KeyframeObject[];
 export type KeyframeEventName = 'animationiteration' | 'animationend';
 export type KeyframeEventListenerName = 'animationendListener' | 'animationiterationListener';
 
+export type KeyframePlugin = (kf: typeof Keyframes) => void;
+
 interface KeyframeCallbacks {
     onStart?: FrameRequestCallback;
     onBeforeStart?: VoidFunction;
     onIteration?: VoidFunction;
     onEnd?: VoidFunction;
+}
+
+const isBrowser = typeof window !== 'undefined';
+let keyframesSheet: CSSStyleSheet;
+if (isBrowser) {
+    const styleElem = document.createElement('style');
+    styleElem.setAttribute('id', 'keyframesjs-stylesheet');
+    document.head.appendChild(styleElem);
+    keyframesSheet = styleElem.sheet as CSSStyleSheet;
 }
 
 const voidFunction = () => {};
@@ -52,9 +63,9 @@ const objToCss = (obj: CSSStyleDeclaration) => {
 };
 
 class Keyframes {
-    static sheet: CSSStyleSheet;
+    static sheet: CSSStyleSheet = keyframesSheet;
 
-    static rules: string[];
+    static rules: string[] = [];
 
     mountedElement: HTMLElement;
 
@@ -279,9 +290,10 @@ class Keyframes {
         const oldFrameIndex = Keyframes.rules.indexOf(frameData.name as string);
         if (oldFrameIndex > -1) {
             Keyframes.sheet.deleteRule(oldFrameIndex);
-            delete Keyframes.rules[oldFrameIndex];
+            Keyframes.rules.splice(oldFrameIndex, 1);
         }
-        const ruleIndex = Keyframes.sheet.insertRule(css, 0);
+        const ruleIndex = (Keyframes.sheet.cssRules || Keyframes.sheet.rules).length;
+        Keyframes.sheet.insertRule(css, ruleIndex);
         Keyframes.rules[ruleIndex] = frameData.name as string;
     }
 
@@ -317,14 +329,7 @@ class Keyframes {
     }
 }
 
-type KeyframePlugin = (kf: typeof Keyframes) => void;
-
-if (typeof window !== 'undefined') {
-    const style = document.createElement('style');
-    style.setAttribute('id', 'keyframesjs-stylesheet');
-    document.head.appendChild(style);
-    Keyframes.sheet = style.sheet as CSSStyleSheet;
-    Keyframes.rules = [];
+if (isBrowser) {
     (window as any).Keyframes = Keyframes;
 }
 
