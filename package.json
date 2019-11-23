@@ -5,7 +5,7 @@
   "main": "dist/keyframes.js",
   "scripts": {
     "prepare": "mkdir -p dist && npm run build",
-    "build": "npm run buildMain && npm run buildExample",
+    "build": "npm run docs && npm run buildMain && npm run buildExample",
     "buildMain": "npm run es5 && npm run browserify && npm run minify",
     "es5": "tsc",
     "browserify": "browserify src/keyframes.ts -o dist/keyframes.dist.js -p [ tsify --noImplicitAny ]",
@@ -16,7 +16,8 @@
     "watch": "nodemon --watch example/example.ts --watch src --exec 'npm run build && npm run buildExample'",
     "versions": "browserify --version && tsc --version && node --version",
     "test": "npm run buildMain && mocha test/bootstrap.js --recursive test",
-    "lint": "eslint --fix . --ext ts"
+    "lint": "eslint --fix . --ext ts",
+    "docs": "typedoc --mode file --out docs src"
   },
   "repository": {
     "type": "git",
@@ -50,6 +51,7 @@
   },
   "dependencies": {
     "add-px-to-style": "^1.0.0",
-    "hyphenate-style-name": "^1.0.3"
+    "hyphenate-style-name": "^1.0.3",
+    "typedoc": "^0.15.2"
   }
 }

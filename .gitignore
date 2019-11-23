@@ -28,3 +28,4 @@ example/example.dist.js
 dist
 .cache
 .mocha-puppeteer
+docs
