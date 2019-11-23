@@ -118,3 +118,7 @@ describe('Play', () => {
         });
     });
 });
+
+module.exports = {
+    animationIncludesTest
+}

@@ -1,9 +1,11 @@
-import Keyframes, { KeyframeObject, KeyframeAnimationObject, KeyframeAnimationOptionArray } from '../src/keyframes';
+import Keyframes, { KeyframeObject, KeyframeAnimationObject, KeyframeAnimationOptionArray, bezierPath, circlePath, spriteSheet, playSpriteSheet } from '../src/keyframes';
 
 const ball = new Keyframes(document.getElementById('ball') as HTMLElement);
 
 // example callback function
 const cbElem = document.getElementById('cb') as HTMLElement;
+
+const coinWidth = 45;
 
 // Adding a new animation sequences (keyframe)
 Keyframes.define([{
@@ -12,7 +14,7 @@ Keyframes.define([{
         marginLeft: '0',
     },
     '50%': {
-        marginLeft: '600px',
+        marginLeft: `${800-coinWidth}px`,
     },
     '100%': {
         marginLeft: '0',
@@ -20,12 +22,22 @@ Keyframes.define([{
 }, {
     name: 'ball-spin',
     from: {
-        transform: 'rotate(90deg)',
+        transform: 'rotate(0deg)',
     },
     to: {
-        transform: 'rotate(450deg)',
+        transform: 'rotate(360deg)',
     },
-}] as KeyframeObject[]);
+},
+bezierPath({ name: 'bezier' }, [0, 0], [0, 0], [100, -50], [-50, 100]),
+circlePath({ name: 'circle' }, [0, 0], 30),
+spriteSheet({
+    name: 'spritesheet',
+    rows: 8,
+    cols: 1,
+    height: 384,
+    width: 45,
+})
+] as KeyframeObject[]);
 
 (window as any).pause = () => {
     // freeze keyframe animation and kill callback
@@ -150,6 +162,30 @@ function increment() {
                 duration: '1s',
                 iterationCount: 1,
             }] as KeyframeAnimationOptionArray, {
+                onEnd: increment,
+            });
+            break;
+
+        case 'bezier':
+            // play bezier path
+            ball.play('bezier 5s ease 0s 1', {
+                onIteration: increment,
+                onEnd: increment,
+            });
+            break;
+        
+        case 'circle':
+            // play bezier path
+            ball.play('circle 1s ease 0s 3', {
+                onIteration: increment,
+                onEnd: increment,
+            });
+            break;
+
+        case 'spritesheet':
+            // play bezier path
+            ball.play(playSpriteSheet('spritesheet', '1s', 'infinite'), {
+                onIteration: increment,
                 onEnd: increment,
             });
             break;

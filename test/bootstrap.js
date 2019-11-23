@@ -1,5 +1,4 @@
 const puppeteer = require('puppeteer');
-const path = require('path');
 
 // puppeteer options
 const opts = {
@@ -9,16 +8,12 @@ const opts = {
 
 let chrome;
 
-global.sleep = (ms) => {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 // expose variables
 before (async function () {
   chrome = await puppeteer.launch(opts);
   global.browser = await chrome.newPage();
-  global.browser.on('console', msg => console.log('PAGE LOG:', msg.text()));
-  await global.browser.goto(`file://${__dirname}/test.html`);
+  browser.on('console', msg => console.log('PAGE LOG:', msg.text()));
+  await browser.goto(`file://${__dirname}/test.html`);
 });
 
 // close browser and reset global variables

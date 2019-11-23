@@ -20,11 +20,13 @@ export interface KeyframeAnimationObject {
 export type KeyframeAnimationOptionArray = (KeyframeAnimationObject | string | unknown)[];
 export type KeyframeAnimationOptions = KeyframeAnimationOptionArray | KeyframeAnimationObject | string;
 
-export type KeyframeObject = {
-    name: string;
-} & {
+export type KeyframeRule = {
     [key: string]: Partial<CSSStyleDeclaration>;
 };
+
+export type KeyframeObject = {
+    name: string;
+} & KeyframeRule;
 
 export type KeyframeOptions = KeyframeObject | KeyframeObject[];
 
@@ -40,7 +42,8 @@ interface KeyframeCallbacks {
     onEnd?: VoidFunction;
 }
 
-const isBrowser = typeof window !== 'undefined';
+export const isBrowser = typeof window !== 'undefined';
+
 let keyframesSheet: CSSStyleSheet;
 if (isBrowser) {
     const styleElem = document.createElement('style');
@@ -318,13 +321,10 @@ class Keyframes {
         return this.generateCSS(frameOptions as KeyframeObject);
     }
 
-    static plugin(pluginFunc: KeyframePlugin | KeyframePlugin[]) {
-        if (pluginFunc.constructor === Array) {
-            for (let i = 0; i < pluginFunc.length; i += 1) {
-                (pluginFunc as KeyframePlugin[])[i](this);
-            }
-        } else {
-            (pluginFunc as KeyframePlugin)(this);
+    static clearRules = () => {
+        Keyframes.rules = [];
+        while (Keyframes.sheet.cssRules.length) {
+            Keyframes.sheet.deleteRule(0);
         }
     }
 }
@@ -332,5 +332,8 @@ class Keyframes {
 if (isBrowser) {
     (window as any).Keyframes = Keyframes;
 }
+
+export * from './pathfinder';
+export * from './spritesheet';
 
 export default Keyframes;

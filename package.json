@@ -4,18 +4,14 @@
   "description": "Keyframes allows dynamic generation of CSS3 keyframes with callback events and other niceness.",
   "main": "dist/keyframes.js",
   "scripts": {
-    "prepare": "mkdir -p dist && npm run build",
-    "build": "npm run docs && npm run buildMain && npm run buildExample",
-    "buildMain": "npm run es5 && npm run browserify && npm run minify",
-    "es5": "tsc",
-    "browserify": "browserify src/keyframes.ts -o dist/keyframes.dist.js -p [ tsify --noImplicitAny ]",
-    "minify": "uglifyjs --compress --mangle -- dist/keyframes.js > dist/keyframes.min.js",
-    "cleanup": "rimraf dist/*.tmp-*",
-    "buildExample": "npm run browserifyExample && npm run cleanup",
-    "browserifyExample": "browserify example/example.ts -o example/example.dist.js -p [ tsify --noImplicitAny ]",
-    "watch": "nodemon --watch example/example.ts --watch src --exec 'npm run build && npm run buildExample'",
+    "prepare": "npm run buildMain",
+    "build": "npm run buildMain && npm run buildExample",
+    "buildMain": "bash scripts/build.sh",
+    "buildExample": "bash scripts/buildExample.sh",
+    "watchExample": "nodemon --watch example/example.ts --watch src --exec \"npm run buildMain && npm run buildExample\"",
     "versions": "browserify --version && tsc --version && node --version",
-    "test": "npm run buildMain && mocha test/bootstrap.js --recursive test",
+    "test": "mocha test/bootstrap.js --recursive test",
+    "watch": "npm run buildMain && mocha test/bootstrap.js --recursive test --watch",
     "lint": "eslint --fix . --ext ts",
     "docs": "typedoc --mode file --out docs src"
   },
@@ -47,11 +43,11 @@
     "tsify": "^4.0.1",
     "typescript": "^3.7.2",
     "uglify-js": "^3.6.9",
-    "zombie": "^6.1.4"
+    "zombie": "^6.1.4",
+    "typedoc": "^0.15.2"
   },
   "dependencies": {
     "add-px-to-style": "^1.0.0",
-    "hyphenate-style-name": "^1.0.3",
-    "typedoc": "^0.15.2"
+    "hyphenate-style-name": "^1.0.3"
   }
 }

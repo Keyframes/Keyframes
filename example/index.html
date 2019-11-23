@@ -15,23 +15,16 @@
       margin-top:20px;
     }
     #ball {
-      width:100px;
-      height:90px;
-      padding-top:10px;
-      background-color:yellow;
-      text-align:center;
-      font-family:tahoma;
-      font-size:56px;
-      font-weight:bold;
-      border-radius: 50px;
-      box-shadow: 0px 0px 10px 0px #000;
+      width:45px;
+      height:48px;
+      background-image: url(coin.png);
     }
   </style>
 </head>
 
 <body>
   <div class="ball-container">
-    <div id="ball" style="transform:rotate(90deg);">: )</div>
+    <div id="ball"></div>
     <br />
     <input type="button" onclick="play('normal')" value="Ease Move" />
     <input type="button" onclick="play('linear')" value="Linear Move" />
@@ -40,7 +33,12 @@
     <input type="button" onclick="play('spin')" value="Spin" />
     <input type="button" onclick="play('multi')" value="Multiple Animations" />
     <input type="button" onclick="play('chained')" value="Chained Animations" />
-    <br />
+    <br /><br />
+    <input type="button" onclick="play('bezier')" value="Bezier Path" />
+    <input type="button" onclick="play('circle')" value="Circle Path" />
+    <br /><br />
+    <input type="button" onclick="play('spritesheet')" value="Spritesheet" />
+    <br /><br />
     <input type="button" onclick="pause()" value="Pause" />
     <input type="button" onclick="resume()" value="Resume" />
     <input type="button" onclick="reset()" value="Reset" />
