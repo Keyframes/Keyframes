@@ -24,11 +24,17 @@ export type KeyframeRule = {
     [key: string]: Partial<CSSStyleDeclaration>;
 };
 
+type PublicCssStyleKeys = keyof Omit<CSSStyleDeclaration, 'length' | 'parentRule' | number>;
+
+type RuleCache = {
+    [key: string]: PublicCssStyleKeys[];
+}
+
 export type KeyframeObject = {
     name: string;
 } & KeyframeRule;
 
-export type KeyframeOptions = KeyframeObject | KeyframeObject[];
+export type KeyframeOptions = string | KeyframeObject | KeyframeObject[];
 
 export type KeyframeEventName = 'animationiteration' | 'animationend';
 export type KeyframeEventListenerName = 'animationendListener' | 'animationiterationListener';
@@ -80,6 +86,10 @@ class Keyframes {
 
     static rules: string[] = [];
 
+    static ruleCache: RuleCache = {};
+
+    frozenStyles: PublicCssStyleKeys[];
+
     mountedElement: HTMLElement;
 
     queueStore: KeyframeAnimationOptionArray = [];
@@ -97,16 +107,39 @@ class Keyframes {
 
     constructor(elem: HTMLElement) {
         this.mountedElement = elem;
+        this.frozenStyles = [];
     }
 
     static isSupported() {
         return document.body.style.animationName !== undefined;
     }
 
+    freeze() {
+        const ruleCache = Keyframes.ruleCache[this.mountedElement.style.animationName];
+        if (ruleCache) {
+            const computedStyle = { ...getComputedStyle(this.mountedElement) };
+            ruleCache.forEach((rule) => {
+                this.mountedElement.style[rule] = computedStyle[rule];
+            });
+            this.frozenStyles = [...new Set(this.frozenStyles.concat(ruleCache))];
+        }
+    }
+
+    unfreeze() {
+        if (this.frozenStyles.length) {
+            this.frozenStyles.forEach((rule) => {
+                this.mountedElement.style[rule] = '';
+            });
+            this.frozenStyles = [];
+        }
+    }
+
     async reset() {
         this.removeEvents();
+
         this.mountedElement.style.animationPlayState = 'running';
         this.mountedElement.style.animation = 'none';
+        
         await wait();
         return this;
     }
@@ -123,9 +156,11 @@ class Keyframes {
 
     play(animationOptions: KeyframeAnimationOptions, callbacks: KeyframeCallbacks) {
         if (this.mountedElement.style.animationName === this.getAnimationName(animationOptions)) {
+            this.freeze();
             requestAnimationFrame(async () => {
                 await this.reset();
                 this.play(animationOptions, callbacks);
+                this.unfreeze();
             });
             return this;
         }
@@ -230,7 +265,7 @@ class Keyframes {
         return this;
     }
 
-    async loop(animationOptions: KeyframeAnimationOptions, callbacks: KeyframeCallbacks) {
+    async loop(animationOptions: KeyframeAnimationOptions, callbacks: KeyframeCallbacks = {}) {
         await this.resetQueue();
         
         const populateQueue = () => {
@@ -315,6 +350,7 @@ class Keyframes {
     }
 
     static generate(frameData: KeyframeObject) {
+        this.addToRuleCache(frameData);
         const css = this.generateCSS(frameData);
 
         const oldFrameIndex = Keyframes.rules.indexOf(frameData.name as string);
@@ -328,12 +364,15 @@ class Keyframes {
     }
 
     static define(frameOptions: KeyframeOptions) {
-        if (frameOptions.length) {
+        if (Array.isArray(frameOptions)) {
             for (let i = 0; i < frameOptions.length; i += 1) {
-                this.generate((frameOptions as KeyframeObject[])[i]);
+                
+                this.generate(frameOptions[i]);
             }
+        } else if (typeof frameOptions === 'string') {
+            this.generate(frameOptions);
         } else {
-            this.generate(frameOptions as KeyframeObject);
+            this.generate(frameOptions);
         }
     }
 
@@ -352,6 +391,15 @@ class Keyframes {
         Keyframes.rules = [];
         while (Keyframes.sheet.cssRules.length) {
             Keyframes.sheet.deleteRule(0);
+        }
+    }
+
+    static addToRuleCache (frameData: KeyframeObject) {
+        if (!this.ruleCache[frameData.name]) {
+            const rules: PublicCssStyleKeys[] = Object.values(frameData)
+                .filter(v => typeof v === 'object')
+                .map(v => Object.keys(v) as PublicCssStyleKeys[]).flat();
+            this.ruleCache[frameData.name] = [...new Set(rules)];
         }
     }
 }

@@ -1,3 +1,4 @@
+const Keyframes = require('../dist/keyframes').default;
 const assert = require('assert');
 describe('Define', () => {
 
@@ -19,6 +20,22 @@ describe('Define', () => {
   0% { transform: rotate(0deg); background-color: red; width: 10px; height: 0px; }
 }`;
             assert.equal(expected, stylesheet);
+        });
+    });
+
+    describe('#addToRuleCache()', () => {
+        it('Should add defined css keys to a cache', () => {
+            Keyframes.addToRuleCache({
+                name: "test",
+                from: {
+                    width: 1
+                },
+                to: {
+                    width: 2,
+                    height: 1
+                }
+            });
+            assert.deepEqual(Keyframes.ruleCache, { test: ['width', 'height'] });
         });
     });
 });

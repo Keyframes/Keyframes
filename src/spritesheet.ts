@@ -42,7 +42,6 @@ export const spriteSheet = ({
         };
         if (x >= opts.width - opts.spriteWidth) {
             y += opts.spriteHeight;
-            x = opts.offsetX;
         } else {
             x += opts.spriteWidth;
         }

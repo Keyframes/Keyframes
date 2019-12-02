@@ -21,6 +21,14 @@ Keyframes.define([{
         marginLeft: '0',
     },
 }, {
+    name: 'ball-move-half',
+    '0%': {
+        marginLeft: '0',
+    },
+    '100%': {
+        marginLeft: `${800-coinWidth}px`,
+    },
+}, {
     name: 'ball-spin',
     from: {
         transform: 'rotate(0deg)',
@@ -170,13 +178,14 @@ function increment() {
         case 'loop':
             // play chained animations using callbacks
                 ball.loop([{
-                    name: 'ball-spin',
+                    name: 'ball-move-half',
                     duration: '1s',
                     iterationCount: 1,
                 }, {
-                    name: 'ball-move',
+                    name: 'ball-move-half',
                     duration: '1s',
                     iterationCount: 1,
+                    direction: 'reverse'
                 }] as KeyframeAnimationOptionArray, {
                     onEnd: increment,
                 });

@@ -1,6 +1,6 @@
 {
   "name": "@keyframes/core",
-  "version": "2.0.2",
+  "version": "2.0.4",
   "description": "Keyframes allows dynamic generation of CSS3 keyframes with callback events and other niceness.",
   "main": "dist/keyframes.js",
   "scripts": {
