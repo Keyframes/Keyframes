@@ -117,6 +117,27 @@ describe('Play', () => {
             assert(animationIncludesTest(animation, ['ball-roll2', '0.1s']));
         });
     });
+
+    describe('#loop()', () => {
+        before(preload);
+        it('Should be able to loop animations', async () => {
+            const animation = await browser.evaluate(async () => {
+                return new Promise((resolve, reject) => {
+                    let count = 0;
+                    kf.loop(['ball-roll 0.1s', 'ball-roll2 0.1s'], {
+                        onEnd: () => {
+                            if (count > 1) {
+                                resolve(true);
+                            } else {
+                                count += 1;
+                            }
+                        }
+                    });
+                });
+            });
+            assert(animation);
+        });
+    });
 });
 
 module.exports = {

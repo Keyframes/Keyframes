@@ -195,6 +195,14 @@ ball.chain([
 ], callbacks);
 ```
 
+**Playing multiple animations sequentially on a loop**
+```javascript
+ball.loop([
+    'trapdoor-sequence 1s',
+    ['crazy 2s', 'crazy-alt 2s'], // These animations are played simultaneously.
+], callbacks);
+```
+
 **Use a queue which can be added to whenever**
 If the queue was previously empty, the queue will start executing immediately.
 ```javascript

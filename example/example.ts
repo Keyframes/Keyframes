@@ -1,6 +1,7 @@
 import Keyframes, { KeyframeObject, KeyframeAnimationObject, KeyframeAnimationOptionArray, bezierPath, circlePath, spriteSheet, playSpriteSheet } from '../src/keyframes';
 
 const ball = new Keyframes(document.getElementById('ball') as HTMLElement);
+(window as any).ball = ball;
 
 // example callback function
 const cbElem = document.getElementById('cb') as HTMLElement;
@@ -165,6 +166,21 @@ function increment() {
                 onEnd: increment,
             });
             break;
+
+        case 'loop':
+            // play chained animations using callbacks
+                ball.loop([{
+                    name: 'ball-spin',
+                    duration: '1s',
+                    iterationCount: 1,
+                }, {
+                    name: 'ball-move',
+                    duration: '1s',
+                    iterationCount: 1,
+                }] as KeyframeAnimationOptionArray, {
+                    onEnd: increment,
+                });
+                break;
 
         case 'bezier':
             // play bezier path

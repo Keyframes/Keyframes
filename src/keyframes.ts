@@ -52,6 +52,16 @@ if (isBrowser) {
     keyframesSheet = styleElem.sheet as CSSStyleSheet;
 }
 
+const clone = (input: KeyframeAnimationOptions): KeyframeAnimationOptions => {
+    if (Array.isArray(input)) {
+        return [ ...input ];
+    } else if (typeof input === 'object') {
+        return { ...input }
+    } else {
+        return input.toString();
+    }
+}
+
 const voidFunction = () => {};
 
 const objToCss = (obj: CSSStyleDeclaration) => {
@@ -186,10 +196,12 @@ class Keyframes {
         const currentQueueLength = this.queueStore.length;
         this.updateCallbacks(callbacks);
 
-        if (animationOptions.constructor === Array) {
-            this.queueStore = (animationOptions as KeyframeAnimationOptionArray).reverse().concat(this.queueStore);
+        const _animationOptions = clone(animationOptions);
+
+        if (Array.isArray(_animationOptions)) {
+            this.queueStore = _animationOptions.reverse().concat(this.queueStore);
         } else {
-            this.queueStore.unshift(animationOptions);
+            this.queueStore.unshift(_animationOptions);
         }
 
         if (!currentQueueLength) {
@@ -215,6 +227,21 @@ class Keyframes {
     async chain(animationOptions: KeyframeAnimationOptions, callbacks: KeyframeCallbacks) {
         await this.resetQueue();
         this.queue(animationOptions, callbacks);
+        return this;
+    }
+
+    async loop(animationOptions: KeyframeAnimationOptions, callbacks: KeyframeCallbacks) {
+        await this.resetQueue();
+        
+        const populateQueue = () => {
+            this.queue(animationOptions, { ...callbacks, onEnd: () => {
+                if (callbacks.onEnd) {
+                    callbacks.onEnd();
+                }
+                populateQueue();
+            }});
+        }
+        populateQueue();
         return this;
     }
 
