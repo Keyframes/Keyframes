@@ -1,0 +1,49 @@
+body{
+  text-align: center;
+}
+.ball-container {
+  width:800px;
+  margin-left:auto;
+  margin-right:auto;
+  text-align:center;
+  margin-top:20px;
+}
+#ball {
+  width:45px;
+  height:48px;
+  background-image: url(coin.png);
+}
+
+.pong {
+  background-color: black;
+  overflow: hidden;
+  width: 800px;
+  height: 450px;
+  margin: 0 auto;
+  position: relative;
+}
+.paddle {
+  height: 40px;
+  width: 10px;
+  background-color: white;
+  top: 10px;
+}
+.paddle-left {
+  position: absolute;
+  left: 10px;
+}
+.paddle-right {
+  position: absolute;
+  right: 10px;
+}
+.ball {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: white;
+}
+.half-line {
+  height: 100%;
+  width: 50%;
+  border-right: 5px dashed grey;
+}

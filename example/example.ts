@@ -1,5 +1,4 @@
 import Keyframes, { bezierPath, circlePath, spriteSheet, playSpriteSheet } from '../src/keyframes';
-import { KeyframeObject } from '../src/types/keyframes';
 
 const ball = new Keyframes(document.getElementById('ball') as HTMLElement);
 (window as any).ball = ball;
@@ -216,3 +215,20 @@ function increment() {
             break;
     }
 };
+
+Keyframes.define({
+  name: "pong-move",
+  from: {
+    top: "50%",
+    left: "20px"
+  },
+  to: {
+    top: "50%",
+    left: "calc(100% - 20px)"
+  }
+});
+
+const pong = new Keyframes(document.querySelectorAll(".ball")[0] as HTMLElement);
+
+pong.loop(["pong-move 3s linear 1", "pong-move 3s linear 1 reverse"]);
+  

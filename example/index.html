@@ -3,23 +3,7 @@
 
 <head>
   <title>Keyframes Example</title>
-  <style>
-    body{
-      text-align: center;
-    }
-    .ball-container {
-      width:800px;
-      margin-left:auto;
-      margin-right:auto;
-      text-align:center;
-      margin-top:20px;
-    }
-    #ball {
-      width:45px;
-      height:48px;
-      background-image: url(coin.png);
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
@@ -45,7 +29,14 @@
     <input type="button" onclick="reset()" value="Reset" />
     <br />
     <br />Callback count: <b id="cb">0</b>
-    <br />
+  </div>
+  <br />
+  <br />
+  <div class="pong">
+    <div class="half-line"></div>
+    <div class="paddle paddle-left"></div>
+    <div class="paddle paddle-right"></div>
+    <div class="ball"></div>
   </div>
   <script type="text/javascript" src="example.dist.js"></script>
 </body>

@@ -1,6 +1,6 @@
 {
   "name": "@keyframes/core",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "Keyframes allows dynamic generation of CSS3 keyframes with callback events and other niceness.",
   "main": "dist/keyframes.js",
   "scripts": {
@@ -41,10 +41,10 @@
     "puppeteer": "^2.0.0",
     "simple-headless-chrome": "^4.3.10",
     "tsify": "^4.0.1",
+    "typedoc": "^0.15.2",
     "typescript": "^3.7.2",
     "uglify-js": "^3.6.9",
-    "zombie": "^6.1.4",
-    "typedoc": "^0.15.2"
+    "zombie": "^6.1.4"
   },
   "dependencies": {
     "add-px-to-style": "^1.0.0",
