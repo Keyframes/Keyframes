@@ -1,4 +1,5 @@
-import Keyframes, { KeyframeObject, KeyframeAnimationObject, KeyframeAnimationOptionArray, bezierPath, circlePath, spriteSheet, playSpriteSheet } from '../src/keyframes';
+import Keyframes, { bezierPath, circlePath, spriteSheet, playSpriteSheet } from '../src/keyframes';
+import { KeyframeObject } from '../src/types/keyframes';
 
 const ball = new Keyframes(document.getElementById('ball') as HTMLElement);
 (window as any).ball = ball;
@@ -46,7 +47,7 @@ spriteSheet({
     height: 384,
     width: 45,
 })
-] as KeyframeObject[]);
+]);
 
 (window as any).pause = () => {
     // freeze keyframe animation and kill callback
@@ -84,7 +85,7 @@ function increment() {
                 iterationCount: 'infinite',
                 direction: 'normal',
                 fillMode: 'forwards',
-            } as KeyframeAnimationObject, {
+            }, {
                 onIteration: increment,
                 onEnd: increment,
             });
@@ -107,7 +108,7 @@ function increment() {
                 duration: '3s',
                 timingFunction: 'linear',
                 iterationCount: 'infinite',
-            } as KeyframeAnimationObject, {
+            }, {
                 onIteration: increment,
                 onEnd: increment,
             });
@@ -122,7 +123,7 @@ function increment() {
                 timingFunction: 'linear',
                 delay: '3s',
                 iterationCount: 'infinite',
-            } as KeyframeAnimationObject, {
+            }, {
                 onIteration: increment,
                 onEnd: increment,
             });
@@ -135,7 +136,7 @@ function increment() {
                 name: 'ball-move',
                 duration: '3s',
                 timingFunction: 'ease',
-            } as KeyframeAnimationObject, {
+            }, {
                 onIteration: increment,
                 onEnd: increment,
             });
@@ -143,19 +144,18 @@ function increment() {
             break;
         case 'multi':
         // play multiple animations
-            ball.play(
-                [
-                    'ball-spin 500ms linear 0s 6',
-                    {
-                        name: 'ball-move',
-                        duration: '3s',
-                        timingFunction: 'ease',
-                        iterationCount: 1,
-                    },
-                ] as KeyframeAnimationOptionArray,
+            ball.play([
+                'ball-spin 500ms linear 0s 6',
                 {
-                    onIteration: increment,
+                    name: 'ball-move',
+                    duration: '3s',
+                    timingFunction: 'ease',
+                    iterationCount: 1,
                 },
+            ],
+            {
+                onIteration: increment,
+            },
             );
             break;
         default:
@@ -170,7 +170,7 @@ function increment() {
                 name: 'ball-move',
                 duration: '1s',
                 iterationCount: 1,
-            }] as KeyframeAnimationOptionArray, {
+            }], {
                 onEnd: increment,
             });
             break;
@@ -186,7 +186,7 @@ function increment() {
                     duration: '1s',
                     iterationCount: 1,
                     direction: 'reverse'
-                }] as KeyframeAnimationOptionArray, {
+                }], {
                     onEnd: increment,
                 });
                 break;

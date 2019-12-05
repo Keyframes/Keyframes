@@ -1,4 +1,5 @@
-import { KeyframeObject, KeyframeRule, isBrowser } from "./keyframes";
+import { isBrowser } from "./keyframes";
+import { KeyframeObject, KeyframeRule } from "./types/keyframes";
 
 type PathFinderOptions = {
     bezierSteps?: number;

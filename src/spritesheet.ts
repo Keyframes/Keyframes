@@ -1,4 +1,5 @@
-import { KeyframeObject, KeyframeRule, isBrowser } from "./keyframes";
+import { isBrowser } from "./keyframes";
+import { KeyframeObject, KeyframeRule, IterationCount } from "./types/keyframes";
 
 type SpriteSheetOptions = {
     name: string,
@@ -50,7 +51,7 @@ export const spriteSheet = ({
     return Object.assign({}, { name: opts.name }, spriteFrames);
 };
 
-export const playSpriteSheet = (name: string, time: string | 0, loops: number | 'infinite' = 'infinite'): string => {
+export const playSpriteSheet = (name: string, time: string | 0, loops: IterationCount = 'infinite'): string => {
     if (loops && loops < 0) {
         loops = 'infinite';
     }

@@ -1,3 +1,4 @@
+import { KeyframeAnimationOptions, RuleCache, PublicCssStyleKeys, KeyframeAnimationOptionArray, KeyframeCallbacks, KeyframeEventName, KeyframeEventListenerName, KeyframeAnimationObject, KeyframeObject, KeyframeOptions } from './types/keyframes';
 import addPx from 'add-px-to-style';
 import hyphenate from 'hyphenate-style-name';
 
@@ -6,47 +7,6 @@ const wait = (): Promise<void> => new Promise(accept => {
         accept();
     });
 });
-
-export interface KeyframeAnimationObject {
-    name: string;
-    duration?: string;
-    timingFunction?: string;
-    delay?: string;
-    iterationCount?: string;
-    direction?: string;
-    fillMode?: string;
-}
-
-export type KeyframeAnimationOptionArray = (KeyframeAnimationObject | string | unknown)[];
-export type KeyframeAnimationOptions = KeyframeAnimationOptionArray | KeyframeAnimationObject | string;
-
-export type KeyframeRule = {
-    [key: string]: Partial<CSSStyleDeclaration>;
-};
-
-type PublicCssStyleKeys = keyof Omit<CSSStyleDeclaration, 'length' | 'parentRule' | number>;
-
-type RuleCache = {
-    [key: string]: PublicCssStyleKeys[];
-}
-
-export type KeyframeObject = {
-    name: string;
-} & KeyframeRule;
-
-export type KeyframeOptions = string | KeyframeObject | KeyframeObject[];
-
-export type KeyframeEventName = 'animationiteration' | 'animationend';
-export type KeyframeEventListenerName = 'animationendListener' | 'animationiterationListener';
-
-export type KeyframePlugin = (kf: typeof Keyframes) => void;
-
-interface KeyframeCallbacks {
-    onStart?: FrameRequestCallback;
-    onBeforeStart?: VoidFunction;
-    onIteration?: VoidFunction;
-    onEnd?: VoidFunction;
-}
 
 export const isBrowser = typeof window !== 'undefined';
 
@@ -176,9 +136,9 @@ class Keyframes {
 
         const addEvent = (type: KeyframeEventName, eventCallback: EventListener) => {
             const listenerName: KeyframeEventListenerName = `${type}Listener` as KeyframeEventListenerName;
-            this.mountedElement.removeEventListener(type, this[listenerName] as EventListener);
+            this.mountedElement.removeEventListener(type, this[listenerName]);
             this[listenerName] = eventCallback;
-            this.mountedElement.addEventListener(type, this[listenerName] as EventListener);
+            this.mountedElement.addEventListener(type, this[listenerName]);
         };
 
         if (onBeforeStart) {
@@ -207,7 +167,7 @@ class Keyframes {
     }
 
     playNext() {
-        const animationOption = this.queueStore.pop() as KeyframeAnimationOptions;
+        const animationOption = this.queueStore.pop();
         if (animationOption) {
             this.play(animationOption, {
                 onEnd: () => this.playNext(),
@@ -281,17 +241,14 @@ class Keyframes {
     }
 
     getAnimationName(animationObject: KeyframeAnimationOptions): string {
-        switch (animationObject.constructor) {
-            case Array: {
-                return (animationObject as KeyframeAnimationObject[]).map(this.getAnimationName).join(', ');
-            }
-            case String: {
-                return (animationObject as string).split(' ')[0];
-            }
-            default: {
-                return (animationObject as KeyframeAnimationObject).name;
-            }
+        if (Array.isArray(animationObject)) {
+            return animationObject.map((o) => this.getAnimationName(o)).join(', ');
         }
+        if (typeof animationObject === 'string') {
+            return animationObject.split(' ')[0];
+        }
+        
+        return animationObject.name;
     }
 
     static playCSS(animationOptions: KeyframeAnimationOptions): string {
@@ -317,20 +274,20 @@ class Keyframes {
             ].join(' ');
         };
 
-        if (animationOptions.constructor === Array) {
-            const animationOptionArray = animationOptions as KeyframeAnimationObject[];
+        if (Array.isArray(animationOptions)) {
             const animationOptionsStrings = [];
-            for (let i = 0; i < animationOptionArray.length; i += 1) {
-                animationOptionsStrings.push(animationOptionArray[i].constructor === String
-                    ? animationOptionArray[i]
-                    : animObjToStr(animationOptionArray[i]));
+            for (let i = 0; i < animationOptions.length; i += 1) {
+                const option = animationOptions[i];
+                animationOptionsStrings.push(typeof option === 'string'
+                    ? option
+                    : animObjToStr(option));
             }
             return animationOptionsStrings.join(', ');
-        } if (animationOptions.constructor === String) {
-            return animationOptions as string;
+        } if (typeof animationOptions === 'string') {
+            return animationOptions;
         }
 
-        return animObjToStr(animationOptions as KeyframeAnimationObject);
+        return animObjToStr(animationOptions);
     }
 
     static generateCSS(frameData: KeyframeObject): string {
@@ -350,41 +307,39 @@ class Keyframes {
     }
 
     static generate(frameData: KeyframeObject) {
+
         this.addToRuleCache(frameData);
         const css = this.generateCSS(frameData);
 
-        const oldFrameIndex = Keyframes.rules.indexOf(frameData.name as string);
+        const oldFrameIndex = Keyframes.rules.indexOf(frameData.name);
         if (oldFrameIndex > -1) {
             Keyframes.sheet.deleteRule(oldFrameIndex);
             Keyframes.rules.splice(oldFrameIndex, 1);
         }
         const ruleIndex = (Keyframes.sheet.cssRules || Keyframes.sheet.rules).length;
         Keyframes.sheet.insertRule(css, ruleIndex);
-        Keyframes.rules[ruleIndex] = frameData.name as string;
+        Keyframes.rules[ruleIndex] = frameData.name;
     }
 
     static define(frameOptions: KeyframeOptions) {
         if (Array.isArray(frameOptions)) {
             for (let i = 0; i < frameOptions.length; i += 1) {
-                
                 this.generate(frameOptions[i]);
             }
-        } else if (typeof frameOptions === 'string') {
-            this.generate(frameOptions);
         } else {
             this.generate(frameOptions);
         }
     }
 
     static defineCSS(frameOptions: KeyframeOptions) {
-        if (frameOptions.length) {
+        if (Array.isArray(frameOptions)) {
             let css = '';
             for (let i = 0; i < frameOptions.length; i += 1) {
-                css += this.generateCSS((frameOptions as KeyframeObject[])[i]);
+                css += this.generateCSS(frameOptions[i]);
             }
             return css;
         }
-        return this.generateCSS(frameOptions as KeyframeObject);
+        return this.generateCSS(frameOptions);
     }
 
     static clearRules = () => {
