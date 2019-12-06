@@ -26,14 +26,15 @@ export type RuleCache = {
     [key: string]: PublicCssStyleKeys[];
 }
 
-export type KeyframeEventName = 'animationiteration' | 'animationend';
-export type KeyframeEventListenerName = 'animationendListener' | 'animationiterationListener';
+export type KeyframeEventName = 'animationiteration' | 'animationend' | 'animationstart';
+export type KeyframeEventListenerName = 'animationendListener' | 'animationiterationListener' | 'animationstartListener';
 
 export interface KeyframeCallbacks {
-    onStart?: FrameRequestCallback;
+    onStart?: EventListener;
+    onIteration?: EventListener;
+    onEnd?: EventListener;
     onBeforeStart?: VoidFunction;
-    onIteration?: VoidFunction;
-    onEnd?: VoidFunction;
+    onQueueComplete?: VoidFunction;
 }
 
 export type IterationCount = number | 'infinite';

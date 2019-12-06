@@ -59,10 +59,11 @@ class Keyframes {
         onBeforeStart: voidFunction,
         onIteration: voidFunction,
         onEnd: voidFunction,
+        onQueueComplete: voidFunction,
     };
 
+    animationstartListener: EventListener = voidFunction;
     animationendListener: EventListener = voidFunction;
-
     animationiterationListener: EventListener = voidFunction;
 
     constructor(elem: HTMLElement) {
@@ -155,7 +156,7 @@ class Keyframes {
             addEvent('animationend', onEnd);
         }
         if (onStart) {
-            requestAnimationFrame(onStart);
+            addEvent('animationstart', onStart);
         }
         return this;
     }
@@ -164,20 +165,24 @@ class Keyframes {
         const animationOption = this.queueStore[this.queueStore.length-1];
         if (animationOption) {
             this.play(animationOption, {
-                onEnd: () => {
+                onEnd: (e) => {
                     this.queueStore.pop();
+                    if (this.callbacks.onEnd) {
+                        this.callbacks.onEnd(e);
+                    }
                     this.playNext()
                 },
                 onIteration: this.callbacks.onIteration,
             });
-        } else if (this.callbacks.onEnd) {
-            this.callbacks.onEnd();
+        } else if (this.callbacks.onQueueComplete) {
+            this.callbacks.onQueueComplete();
         }
     }
     
     removeEvents() {
         this.mountedElement.removeEventListener('animationiteration', this.animationiterationListener);
         this.mountedElement.removeEventListener('animationend', this.animationendListener);
+        this.mountedElement.removeEventListener('animationstart', this.animationstartListener);
         return this;
     }
 
@@ -207,9 +212,6 @@ class Keyframes {
                 this.callbacks.onBeforeStart();
             }
             this.playNext();
-            if (this.callbacks.onStart) {
-                requestAnimationFrame(this.callbacks.onStart);
-            }
         }
         return this;
     }
@@ -233,12 +235,7 @@ class Keyframes {
         await this.resetQueue();
         
         const populateQueue = () => {
-            this.queue(animationOptions, { ...callbacks, onEnd: () => {
-                if (callbacks.onEnd) {
-                    callbacks.onEnd();
-                }
-                populateQueue();
-            }});
+            this.queue(animationOptions, { ...callbacks, onQueueComplete: () => populateQueue() });
         }
         populateQueue();
         return this;

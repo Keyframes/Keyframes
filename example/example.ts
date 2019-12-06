@@ -232,5 +232,5 @@ Keyframes.define({
 
 const pong = new Keyframes(document.querySelectorAll(".ball")[0] as HTMLElement);
 
-pong.loop(["pong-move 3s linear 1", "pong-move 3s linear 1 reverse"]);
+pong.loop(["pong-move 3s linear 1 forwards", "pong-move 3s linear 1 reverse forwards"]);
   
