@@ -1,4 +1,8 @@
 const assert = require('assert');
+const jsdom = require('mocha-jsdom');
+const Keyframes = require('../dist/keyframes').default;
+
+global.requestAnimationFrame = cb => setTimeout(cb);
 
 const preload = async () => {
     await browser.evaluate(() => {
@@ -72,6 +76,7 @@ describe('Play', () => {
 
     describe('#queue()', () => {
         before(preload);
+        jsdom({ url: "http://localhost" });
         it('Should be able to queue animations', async () => {
             const animation = await browser.evaluate(async () => {
                 return new Promise((resolve, reject) => {
@@ -85,7 +90,7 @@ describe('Play', () => {
             assert(animationIncludesTest(animation, ['ball-roll', '0.1s']));
         });
 
-        it('Should be able to add queue items on the fly', async () => {
+        it('Should play last animation onEnd', async () => {
             const animation = await browser.evaluate(async () => {
                 return new Promise((resolve, reject) => {
                     kf.resetQueue().then(() => {
@@ -100,21 +105,12 @@ describe('Play', () => {
             });
             assert(animationIncludesTest(animation, ['ball-roll2', '0.1s']));
         });
-    });
 
-    describe('#chain()', () => {
-        before(preload);
-        it('Should be able to chain animations', async () => {
-            const animation = await browser.evaluate(async () => {
-                return new Promise((resolve, reject) => {
-                    kf.chain(['ball-roll 0.1s', 'ball-roll2 0.1s'], {
-                        onEnd: () => {
-                            resolve(window.elem.style.animation);
-                        }
-                    });
-                });
-            });
-            assert(animationIncludesTest(animation, ['ball-roll2', '0.1s']));
+        it('Should add multiple animations to the queue', async () => {
+            const kf = new Keyframes(document.createElement("div"));
+            kf.queue(['ball-roll 0.1s']);
+            kf.queue('ball-roll2 0.1s');
+            assert.equal(kf.queueStore.length, 2);
         });
     });
 

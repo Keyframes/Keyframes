@@ -160,7 +160,7 @@ ball.play({
     onBeforeStart, // Optional: Fired before the animation starts.
     onStart, // Optional: Fired after the animation started.
     onIteration, // Optional: If your animation has multiple iterations, this function will fire after each one.
-    onEnd, // Optional: Fired at the end of the animation but if using a `queue` or `chain`, it will fire after the queue/chain has completed.
+    onEnd, // Optional: Fired at the end of the animation but if using a `queue`, it will fire after the queue has completed.
 });
 ```
 
@@ -184,14 +184,6 @@ ball.play([
       timingFunction: 'ease',
       iterationCount: 1
     }
-], callbacks);
-```
-
-**Playing multiple animations sequentially (one after the other)**
-```javascript
-ball.chain([
-    'trapdoor-sequence 1s',
-    ['crazy 2s', 'crazy-alt 2s'], // These animations are played simultaneously.
 ], callbacks);
 ```
 
@@ -275,8 +267,18 @@ See other plugins that allow for spritesheets & more complex movement paths: htt
 
 Changelog
 ---------
+
+**2.0.6**
+* Deprecate chain
+* Fixed a bug where queue would not actually queue animations
+
+**2.0.5**
+* Added `loop` method
+* Bug fixes
+* Added freeze and unfreeze
+
 **2.0.0**
-* https://github.com/Keyframes/Keyframes/issues/1 Queue/Chaining
+* https://github.com/Keyframes/Keyframes/issues/1 Queue
 * https://github.com/Keyframes/Keyframes/issues/9 Js Style keys
 
 **1.1.1**

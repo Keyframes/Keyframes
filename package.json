@@ -1,6 +1,6 @@
 {
   "name": "@keyframes/core",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "Keyframes allows dynamic generation of CSS3 keyframes with callback events and other niceness.",
   "main": "dist/keyframes.js",
   "scripts": {
@@ -12,6 +12,7 @@
     "versions": "browserify --version && tsc --version && node --version",
     "test": "mocha test/bootstrap.js --recursive test",
     "watch": "npm run buildMain && mocha test/bootstrap.js --recursive test --watch",
+    "debug": "npm run buildMain && mocha --inspect-brk test/bootstrap.js --recursive test --watch",
     "lint": "eslint --fix . --ext ts",
     "docs": "typedoc --mode file --out docs src"
   },
@@ -37,6 +38,7 @@
     "browserify": "^16.5.0",
     "eslint": "^6.6.0",
     "mocha": "^6.2.2",
+    "mocha-jsdom": "^2.0.0",
     "nodemon": "^1.19.4",
     "puppeteer": "^2.0.0",
     "simple-headless-chrome": "^4.3.10",

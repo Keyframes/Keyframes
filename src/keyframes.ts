@@ -160,25 +160,28 @@ class Keyframes {
         return this;
     }
 
-    removeEvents() {
-        this.mountedElement.removeEventListener('animationiteration', this.animationiterationListener);
-        this.mountedElement.removeEventListener('animationend', this.animationendListener);
-        return this;
-    }
-
     playNext() {
-        const animationOption = this.queueStore.pop();
+        const animationOption = this.queueStore[this.queueStore.length-1];
         if (animationOption) {
             this.play(animationOption, {
-                onEnd: () => this.playNext(),
+                onEnd: () => {
+                    this.queueStore.pop();
+                    this.playNext()
+                },
                 onIteration: this.callbacks.onIteration,
             });
         } else if (this.callbacks.onEnd) {
             this.callbacks.onEnd();
         }
     }
+    
+    removeEvents() {
+        this.mountedElement.removeEventListener('animationiteration', this.animationiterationListener);
+        this.mountedElement.removeEventListener('animationend', this.animationendListener);
+        return this;
+    }
 
-    updateCallbacks(callbacks: KeyframeCallbacks) {
+    updateCallbacks(callbacks?: KeyframeCallbacks) {
         if (callbacks) {
             this.callbacks = {
                 ...this.callbacks,
@@ -187,7 +190,7 @@ class Keyframes {
         }
     }
 
-    queue(animationOptions: KeyframeAnimationOptions, callbacks: KeyframeCallbacks) {
+    queue(animationOptions: KeyframeAnimationOptions, callbacks?: KeyframeCallbacks) {
         const currentQueueLength = this.queueStore.length;
         this.updateCallbacks(callbacks);
 
@@ -211,17 +214,18 @@ class Keyframes {
         return this;
     }
 
+    // Deprecating
+    chain(animationOptions: KeyframeAnimationOptions, callbacks?: KeyframeCallbacks) {
+        console.warn("Keyframes: .chain is deprecated, please use .queue");
+        this.queue(animationOptions, callbacks);
+        return this;
+    }
+
     async resetQueue() {
         await wait();
         this.removeEvents();
         this.queueStore = [];
         await this.reset();
-        return this;
-    }
-
-    async chain(animationOptions: KeyframeAnimationOptions, callbacks: KeyframeCallbacks) {
-        await this.resetQueue();
-        this.queue(animationOptions, callbacks);
         return this;
     }
 

@@ -159,36 +159,38 @@ function increment() {
             break;
         default:
 
-        case 'chained':
-        // play chained animations using callbacks
-            ball.chain([{
+        case 'queued':
+            // play queued animations using callbacks
+            ball.queue({
                 name: 'ball-spin',
                 duration: '1s',
                 iterationCount: 1,
             }, {
+                onEnd: increment,
+            });
+
+            ball.queue({
                 name: 'ball-move',
                 duration: '1s',
                 iterationCount: 1,
-            }], {
-                onEnd: increment,
             });
             break;
 
         case 'loop':
-            // play chained animations using callbacks
-                ball.loop([{
-                    name: 'ball-move-half',
-                    duration: '1s',
-                    iterationCount: 1,
-                }, {
-                    name: 'ball-move-half',
-                    duration: '1s',
-                    iterationCount: 1,
-                    direction: 'reverse'
-                }], {
-                    onEnd: increment,
-                });
-                break;
+            // play looped animations using callbacks
+            ball.loop([{
+                name: 'ball-move-half',
+                duration: '1s',
+                iterationCount: 1,
+            }, {
+                name: 'ball-move-half',
+                duration: '1s',
+                iterationCount: 1,
+                direction: 'reverse'
+            }], {
+                onEnd: increment,
+            });
+            break;
 
         case 'bezier':
             // play bezier path
