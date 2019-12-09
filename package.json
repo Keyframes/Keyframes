@@ -8,7 +8,7 @@
     "build": "npm run buildMain && npm run buildExample",
     "buildMain": "bash scripts/build.sh",
     "buildExample": "bash scripts/buildExample.sh",
-    "watchExample": "nodemon --watch example/example.ts --watch src --exec \"npm run buildMain && npm run buildExample\"",
+    "watchExample": "nodemon --watch example/example.ts --watch src -e ts,html,css --exec \"npm run buildMain && npm run buildExample\"",
     "versions": "browserify --version && tsc --version && node --version",
     "test": "mocha test/bootstrap.js --recursive test",
     "watch": "npm run buildMain && mocha test/bootstrap.js --recursive test --watch",

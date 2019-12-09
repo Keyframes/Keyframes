@@ -50,67 +50,80 @@ describe('Play', () => {
         });
 
         it('Should execute callbacks', async () => {
-            const count = await browser.evaluate(async () => {
+            const result = await browser.evaluate(async () => {
                 return new Promise((resolve, reject) => {
-                    let count = 0;
+                    const events = [];
 
                     kf.play('ball-roll 0.1s linear 0s 5 normal forwards', {
                         onBeforeStart: () => {
-                            count += 1;
+                            events.push(1);
                         },
                         onStart: () => {
-                            count += 1;
+                            events.push(2);
                         },
                         onIteration: () => {
-                            count += 1;
+                            events.push(3);
                         },
                         onEnd: () => {
-                            resolve(count);
+                            resolve(events);
                         }
                     });
                 });
             });
-            assert.equal(count, 6);
+            assert.deepEqual(result, [1,2,3,3,3,3]);
+        });
+
+        it('Should execute cancel callback', async () => {
+            const count = await browser.evaluate(async () => {
+                return new Promise((resolve, reject) => {
+                    kf.play('ball-roll 0.2s linear 0s infinite', {
+                        onIteration: () => {
+                            kf.play('ball-roll2 0.1s linear 0s infinite normal forwards');
+                        },
+                        onCancel: () => {
+                            resolve(true);
+                        }
+                    });
+                });
+            });
+            assert(count);
         });
     });
 
     describe('#queue()', () => {
-        before(preload);
-        jsdom({ url: "http://localhost" });
-        it('Should be able to queue animations', async () => {
-            const animation = await browser.evaluate(async () => {
-                return new Promise((resolve, reject) => {
-                    kf.queue(['ball-roll 0.1s'], {
-                        onEnd: () => {
-                            resolve(window.elem.style.animation);
-                        }
-                    });
-                });
+        describe('Queueing', () => {
+            jsdom({ url: "http://localhost" });
+            it('Should be able to queue animations', () => {
+                const kf = new Keyframes(document.createElement("div"));
+                kf.queue(['ball-roll 0.1s']);
+                assert(animationIncludesTest(kf.queueStore[0], ['ball-roll', '0.1s']));
             });
-            assert(animationIncludesTest(animation, ['ball-roll', '0.1s']));
-        });
 
-        it('Should play last animation onEnd', async () => {
-            const animation = await browser.evaluate(async () => {
-                return new Promise((resolve, reject) => {
-                    kf.resetQueue().then(() => {
-                        kf.queue(['ball-roll 0.1s'], {
-                            onEnd: () => {
-                                resolve(window.elem.style.animation);
-                            }
+            it('Should add multiple animations to the queue', () => {
+                const kf = new Keyframes(document.createElement("div"));
+                kf.queue(['ball-roll 0.1s']);
+                kf.queue('ball-roll2 0.1s');
+                assert.equal(kf.queueStore.length, 2);
+            });
+        });
+       
+        describe('Playing', () => {
+            before(preload);
+            it('Should play last animation onEnd', async () => {
+                const animation = await browser.evaluate(async () => {
+                    return new Promise((resolve, reject) => {
+                        kf.resetQueue().then(() => {
+                            kf.queue(['ball-roll 0.1s'], {
+                                onEnd: () => {
+                                    resolve(window.elem.style.animation);
+                                }
+                            });
+                            kf.queue('ball-roll2 0.1s');
                         });
-                        kf.queue('ball-roll2 0.1s');
                     });
                 });
+                assert(animationIncludesTest(animation, ['ball-roll2', '0.1s']));
             });
-            assert(animationIncludesTest(animation, ['ball-roll2', '0.1s']));
-        });
-
-        it('Should add multiple animations to the queue', async () => {
-            const kf = new Keyframes(document.createElement("div"));
-            kf.queue(['ball-roll 0.1s']);
-            kf.queue('ball-roll2 0.1s');
-            assert.equal(kf.queueStore.length, 2);
         });
     });
 

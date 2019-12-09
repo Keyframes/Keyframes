@@ -26,13 +26,14 @@ export type RuleCache = {
     [key: string]: PublicCssStyleKeys[];
 }
 
-export type KeyframeEventName = 'animationiteration' | 'animationend' | 'animationstart';
-export type KeyframeEventListenerName = 'animationendListener' | 'animationiterationListener' | 'animationstartListener';
+export type KeyframeEventName = 'animationiteration' | 'animationend' | 'animationstart' | 'animationcancel';
+export type KeyframeEventListenerName = 'animationcancelListener' | 'animationendListener' | 'animationiterationListener' | 'animationstartListener';
 
 export interface KeyframeCallbacks {
     onStart?: EventListener;
     onIteration?: EventListener;
     onEnd?: EventListener;
+    onCancel?: VoidFunction;
     onBeforeStart?: VoidFunction;
     onQueueComplete?: VoidFunction;
 }

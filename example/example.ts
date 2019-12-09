@@ -1,6 +1,6 @@
 import Keyframes, { bezierPath, circlePath, spriteSheet, playSpriteSheet } from '../src/keyframes';
 
-const ball = new Keyframes(document.getElementById('ball') as HTMLElement);
+const ball = new Keyframes(document.getElementById('ball') as HTMLElement, true);
 (window as any).ball = ball;
 
 // example callback function

@@ -48,11 +48,17 @@ class Keyframes {
 
     static ruleCache: RuleCache = {};
 
+    playing: boolean = false;
+    previousCancel: VoidFunction = voidFunction;
+
+    debug: boolean = false;
+
     frozenStyles: PublicCssStyleKeys[];
 
     mountedElement: HTMLElement;
 
     queueStore: KeyframeAnimationOptionArray = [];
+
 
     callbacks: KeyframeCallbacks = {
         onStart: voidFunction,
@@ -60,15 +66,18 @@ class Keyframes {
         onIteration: voidFunction,
         onEnd: voidFunction,
         onQueueComplete: voidFunction,
+        onCancel: voidFunction,
     };
 
     animationstartListener: EventListener = voidFunction;
     animationendListener: EventListener = voidFunction;
     animationiterationListener: EventListener = voidFunction;
+    animationcancelListener: EventListener = voidFunction;
 
-    constructor(elem: HTMLElement) {
+    constructor(elem: HTMLElement, debug: boolean = false) {
         this.mountedElement = elem;
         this.frozenStyles = [];
+        this.debug = debug;
     }
 
     static isSupported() {
@@ -96,6 +105,9 @@ class Keyframes {
     }
 
     async reset() {
+        this.log('reset');
+
+        this.playing = false;
         this.removeEvents();
 
         this.mountedElement.style.animationPlayState = 'running';
@@ -114,8 +126,28 @@ class Keyframes {
         this.mountedElement.style.animationPlayState = 'running';
         return this;
     }
-
+    
     play(animationOptions: KeyframeAnimationOptions, callbacks: KeyframeCallbacks) {
+        this.log('play', animationOptions);
+        const {
+            onBeforeStart = null,
+            onStart = null,
+            onIteration = null,
+            onEnd = null,
+            onCancel = null,
+        } = callbacks || {};
+        
+        if (this.playing === true) {
+            this.log('cancelled');
+            if (this.previousCancel) {
+                this.previousCancel();
+            }
+        }
+        if (onCancel) {
+            this.previousCancel = onCancel;
+        }
+        
+
         if (this.mountedElement.style.animationName === this.getAnimationName(animationOptions)) {
             this.freeze();
             requestAnimationFrame(async () => {
@@ -125,14 +157,8 @@ class Keyframes {
             });
             return this;
         }
-
-        const {
-            onBeforeStart = null,
-            onStart = null,
-            onIteration = null,
-            onEnd = null,
-        } = callbacks || {};
-
+        
+        this.playing = true;
         const animationcss = Keyframes.playCSS(animationOptions);
 
         const addEvent = (type: KeyframeEventName, eventCallback: EventListener) => {
@@ -153,7 +179,10 @@ class Keyframes {
             addEvent('animationiteration', onIteration);
         }
         if (onEnd) {
-            addEvent('animationend', onEnd);
+            addEvent('animationend', (e) => {
+                this.playing = false;
+                onEnd(e)
+            });
         }
         if (onStart) {
             addEvent('animationstart', onStart);
@@ -164,14 +193,21 @@ class Keyframes {
     playNext() {
         const animationOption = this.queueStore[this.queueStore.length-1];
         if (animationOption) {
+            this.log('playNext', animationOption);
+        } else {
+            this.log('Queue Complete');
+        }
+
+        if (animationOption) {
             this.play(animationOption, {
                 onEnd: (e) => {
                     this.queueStore.pop();
                     if (this.callbacks.onEnd) {
                         this.callbacks.onEnd(e);
                     }
-                    this.playNext()
+                    this.playNext();
                 },
+                onCancel: this.callbacks.onCancel,
                 onIteration: this.callbacks.onIteration,
             });
         } else if (this.callbacks.onQueueComplete) {
@@ -182,6 +218,7 @@ class Keyframes {
     removeEvents() {
         this.mountedElement.removeEventListener('animationiteration', this.animationiterationListener);
         this.mountedElement.removeEventListener('animationend', this.animationendListener);
+        this.mountedElement.removeEventListener('animationcancel', this.animationendListener);
         this.mountedElement.removeEventListener('animationstart', this.animationstartListener);
         return this;
     }
@@ -196,6 +233,7 @@ class Keyframes {
     }
 
     queue(animationOptions: KeyframeAnimationOptions, callbacks?: KeyframeCallbacks) {
+        this.log('queue', animationOptions);
         const currentQueueLength = this.queueStore.length;
         this.updateCallbacks(callbacks);
 
@@ -224,6 +262,7 @@ class Keyframes {
     }
 
     async resetQueue() {
+        this.log('resetQueue');
         await wait();
         this.removeEvents();
         this.queueStore = [];
@@ -232,6 +271,7 @@ class Keyframes {
     }
 
     async loop(animationOptions: KeyframeAnimationOptions, callbacks: KeyframeCallbacks = {}) {
+        this.log('loop', animationOptions);
         await this.resetQueue();
         
         const populateQueue = () => {
@@ -356,6 +396,12 @@ class Keyframes {
                 .filter(v => typeof v === 'object')
                 .map(v => Object.keys(v) as PublicCssStyleKeys[]).flat();
             this.ruleCache[frameData.name] = [...new Set(rules)];
+        }
+    }
+
+    log(msg: string, detail?: any) {
+        if (this.debug) {
+            console.log(this.mountedElement, msg, detail);
         }
     }
 }
