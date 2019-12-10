@@ -36,6 +36,16 @@ Keyframes.define([{
     to: {
         transform: 'rotate(360deg)',
     },
+}, {
+    name: 'ball-spin-half',
+    from: {
+        transform: 'rotate(0deg)',
+        marginLeft: `${800-coinWidth}px`,
+    },
+    to: {
+        transform: 'rotate(360deg)',
+        marginLeft: `${800-coinWidth}px`,
+    },
 },
 bezierPath({ name: 'bezier' }, [0, 0], [0, 0], [100, -50], [-50, 100]),
 circlePath({ name: 'circle' }, [0, 0], 30),
@@ -61,7 +71,7 @@ spriteSheet({
 (window as any).reset = () => {
     // reset keyframe animation
     cbElem.innerHTML = '0';
-    ball.reset();
+    ball.resetQueue();
     cbElem.innerHTML = '0';
 };
 
@@ -180,6 +190,10 @@ function increment() {
             // play looped animations using callbacks
             ball.loop([{
                 name: 'ball-move-half',
+                duration: '1s',
+                iterationCount: 1,
+            }, {
+                name: 'ball-spin-half',
                 duration: '1s',
                 iterationCount: 1,
             }, {
