@@ -31,3 +31,4 @@ dist/*.js
 docs
 coverage
 .nyc_output
+*.tmp-*
