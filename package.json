@@ -1,17 +1,16 @@
 {
   "name": "@keyframes/core",
-  "version": "2.0.5",
+  "version": "2.0.9",
   "description": "Keyframes allows dynamic generation of CSS3 keyframes with callback events and other niceness.",
   "main": "dist/keyframes.js",
   "scripts": {
     "prepare": "npm run buildMain",
-    "build": "npm run buildMain && npm run buildExample",
+    "start": "concurrently \"node scripts/live-server.js\" \"npm-watch\"",
+    "build": "npm run buildExample && npm run buildMain",
     "buildMain": "bash scripts/build.sh",
     "buildExample": "bash scripts/buildExample.sh",
-    "watchExample": "nodemon --watch example/example.ts --watch src --exec \"npm run buildMain && npm run buildExample\"",
-    "versions": "browserify --version && tsc --version && node --version",
-    "test": "mocha test/bootstrap.js --recursive test",
-    "watch": "npm run buildMain && mocha test/bootstrap.js --recursive test --watch",
+    "test": "mocha",
+    "debug": "npm run buildMain && mocha --inspect-brk --watch",
     "lint": "eslint --fix . --ext ts",
     "docs": "typedoc --mode file --out docs src"
   },
@@ -35,9 +34,12 @@
     "@typescript-eslint/eslint-plugin": "^2.7.0",
     "@typescript-eslint/parser": "^2.7.0",
     "browserify": "^16.5.0",
+    "concurrently": "^5.0.1",
     "eslint": "^6.6.0",
+    "live-server": "^1.2.1",
+    "livereload": "^0.8.2",
     "mocha": "^6.2.2",
-    "nodemon": "^1.19.4",
+    "mocha-jsdom": "^2.0.0",
     "puppeteer": "^2.0.0",
     "simple-headless-chrome": "^4.3.10",
     "tsify": "^4.0.1",
@@ -48,6 +50,27 @@
   },
   "dependencies": {
     "add-px-to-style": "^1.0.0",
-    "hyphenate-style-name": "^1.0.3"
+    "hyphenate-style-name": "^1.0.3",
+    "npm-watch": "^0.6.0"
+  },
+  "mocha": {
+    "file": "test/bootstrap.js",
+    "recursive": "test"
+  },
+  "watch": {
+    "buildExample": {
+      "patterns": [
+        "example"
+      ],
+      "extensions": "ts",
+      "quiet": false
+    },
+    "build": {
+      "patterns": [
+        "src"
+      ],
+      "extensions": "ts",
+      "quiet": false
+    }
   }
 }

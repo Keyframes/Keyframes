@@ -1,4 +1,8 @@
 const assert = require('assert');
+const jsdom = require('mocha-jsdom');
+const Keyframes = require('../dist/keyframes').default;
+
+global.requestAnimationFrame = cb => setTimeout(cb);
 
 const preload = async () => {
     await browser.evaluate(() => {
@@ -46,98 +50,46 @@ describe('Play', () => {
         });
 
         it('Should execute callbacks', async () => {
-            const count = await browser.evaluate(async () => {
+            const result = await browser.evaluate(async () => {
                 return new Promise((resolve, reject) => {
-                    let count = 0;
+                    const events = [];
 
-                    kf.play('ball-roll 0.1s linear 0s 5 normal forwards', {
+                    kf.play('ball-roll 0.05s linear 0s 5 normal forwards', {
                         onBeforeStart: () => {
-                            count += 1;
+                            events.push(1);
                         },
                         onStart: () => {
-                            count += 1;
+                            events.push(2);
                         },
                         onIteration: () => {
-                            count += 1;
+                            events.push(3);
                         },
                         onEnd: () => {
-                            resolve(count);
+                            resolve(events);
                         }
                     });
                 });
             });
-            assert.equal(count, 6);
+            assert.deepEqual(result, [1,2,3,3,3,3]);
         });
-    });
 
-    describe('#queue()', () => {
-        before(preload);
-        it('Should be able to queue animations', async () => {
-            const animation = await browser.evaluate(async () => {
+        it('Should execute cancel callback', async () => {
+            const count = await browser.evaluate(async () => {
                 return new Promise((resolve, reject) => {
-                    kf.queue(['ball-roll 0.1s'], {
-                        onEnd: () => {
-                            resolve(window.elem.style.animation);
+                    kf.play('ball-roll 0.2s linear 0s infinite', {
+                        onIteration: () => {
+                            kf.play('ball-roll2 0.1s linear 0s infinite normal forwards');
+                        },
+                        onCancel: () => {
+                            resolve(true);
                         }
                     });
                 });
             });
-            assert(animationIncludesTest(animation, ['ball-roll', '0.1s']));
-        });
-
-        it('Should be able to add queue items on the fly', async () => {
-            const animation = await browser.evaluate(async () => {
-                return new Promise((resolve, reject) => {
-                    kf.resetQueue().then(() => {
-                        kf.queue(['ball-roll 0.1s'], {
-                            onEnd: () => {
-                                resolve(window.elem.style.animation);
-                            }
-                        });
-                        kf.queue('ball-roll2 0.1s');
-                    });
-                });
-            });
-            assert(animationIncludesTest(animation, ['ball-roll2', '0.1s']));
+            assert(count);
         });
     });
 
-    describe('#chain()', () => {
-        before(preload);
-        it('Should be able to chain animations', async () => {
-            const animation = await browser.evaluate(async () => {
-                return new Promise((resolve, reject) => {
-                    kf.chain(['ball-roll 0.1s', 'ball-roll2 0.1s'], {
-                        onEnd: () => {
-                            resolve(window.elem.style.animation);
-                        }
-                    });
-                });
-            });
-            assert(animationIncludesTest(animation, ['ball-roll2', '0.1s']));
-        });
-    });
-
-    describe('#loop()', () => {
-        before(preload);
-        it('Should be able to loop animations', async () => {
-            const animation = await browser.evaluate(async () => {
-                return new Promise((resolve, reject) => {
-                    let count = 0;
-                    kf.loop(['ball-roll 0.1s', 'ball-roll2 0.1s'], {
-                        onEnd: () => {
-                            if (count > 1) {
-                                resolve(true);
-                            } else {
-                                count += 1;
-                            }
-                        }
-                    });
-                });
-            });
-            assert(animation);
-        });
-    });
 });
 
 module.exports = {

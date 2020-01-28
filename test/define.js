@@ -2,6 +2,12 @@ const Keyframes = require('../dist/keyframes').default;
 const assert = require('assert');
 describe('Define', () => {
 
+    beforeEach(async () => {
+        await browser.evaluate(() => {
+            Keyframes.clearRules();
+        });
+    });
+    
     describe('#define()', () => {
         it('Should define css and add to header', async () => {
             const stylesheet = await browser.evaluate(() => {

@@ -1,6 +1,6 @@
 import Keyframes, { bezierPath, circlePath, spriteSheet, playSpriteSheet } from '../src/keyframes';
 
-const ball = new Keyframes(document.getElementById('ball') as HTMLElement);
+const ball = new Keyframes(document.getElementById('ball') as HTMLElement, true);
 (window as any).ball = ball;
 
 // example callback function
@@ -36,6 +36,16 @@ Keyframes.define([{
     to: {
         transform: 'rotate(360deg)',
     },
+}, {
+    name: 'ball-spin-half',
+    from: {
+        transform: 'rotate(0deg)',
+        marginLeft: `${800-coinWidth}px`,
+    },
+    to: {
+        transform: 'rotate(360deg)',
+        marginLeft: `${800-coinWidth}px`,
+    },
 },
 bezierPath({ name: 'bezier' }, [0, 0], [0, 0], [100, -50], [-50, 100]),
 circlePath({ name: 'circle' }, [0, 0], 30),
@@ -61,7 +71,7 @@ spriteSheet({
 (window as any).reset = () => {
     // reset keyframe animation
     cbElem.innerHTML = '0';
-    ball.reset();
+    ball.resetQueue();
     cbElem.innerHTML = '0';
 };
 
@@ -159,36 +169,42 @@ function increment() {
             break;
         default:
 
-        case 'chained':
-        // play chained animations using callbacks
-            ball.chain([{
+        case 'queued':
+            // play queued animations using callbacks
+            ball.queue({
                 name: 'ball-spin',
                 duration: '1s',
                 iterationCount: 1,
             }, {
+                onEnd: increment,
+            });
+
+            ball.queue({
                 name: 'ball-move',
                 duration: '1s',
                 iterationCount: 1,
-            }], {
-                onEnd: increment,
             });
             break;
 
         case 'loop':
-            // play chained animations using callbacks
-                ball.loop([{
-                    name: 'ball-move-half',
-                    duration: '1s',
-                    iterationCount: 1,
-                }, {
-                    name: 'ball-move-half',
-                    duration: '1s',
-                    iterationCount: 1,
-                    direction: 'reverse'
-                }], {
-                    onEnd: increment,
-                });
-                break;
+            // play looped animations using callbacks
+            ball.loop([{
+                name: 'ball-move-half',
+                duration: '1s',
+                iterationCount: 1,
+            }, {
+                name: 'ball-spin-half',
+                duration: '1s',
+                iterationCount: 1,
+            }, {
+                name: 'ball-move-half',
+                duration: '1s',
+                iterationCount: 1,
+                direction: 'reverse'
+            }], {
+                onEnd: increment,
+            });
+            break;
 
         case 'bezier':
             // play bezier path
@@ -230,5 +246,5 @@ Keyframes.define({
 
 const pong = new Keyframes(document.querySelectorAll(".ball")[0] as HTMLElement);
 
-pong.loop(["pong-move 3s linear 1", "pong-move 3s linear 1 reverse"]);
+pong.loop(["pong-move 3s linear 1 forwards", "pong-move 3s linear 1 reverse forwards"]);
   
