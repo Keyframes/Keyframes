@@ -1,6 +1,6 @@
 {
   "name": "@keyframes/core",
-  "version": "2.0.9",
+  "version": "2.0.10",
   "description": "Keyframes allows dynamic generation of CSS3 keyframes with callback events and other niceness.",
   "main": "dist/keyframes.js",
   "scripts": {
@@ -37,7 +37,7 @@
     "concurrently": "^5.0.1",
     "eslint": "^6.6.0",
     "live-server": "^1.2.1",
-    "livereload": "^0.8.2",
+    "livereload": "^0.9.1",
     "mocha": "^6.2.2",
     "mocha-jsdom": "^2.0.0",
     "puppeteer": "^2.0.0",
