@@ -1,3 +1,153 @@
+Skip to content
+Search or jump to…
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@zakwarlord7 
+Your account has been flagged.
+Because of that, your profile is hidden from the public. If you believe this is a mistake, contact support to have your account status reviewed.
+Keyframes
+/
+Keyframes
+Public
+Code
+Issues
+3
+Pull requests
+16
+Actions
+Projects
+Wiki
+Security
+Insights
+You’re making changes in a project you don’t have write access to. Submitting a change will write it to a new branch in your fork zakwarlord7/Keyframes, so you can send a pull request.
+Keyframes
+/
+example
+/
+style.css
+in
+Keyframes:master
+ 
+
+Spaces
+
+2
+
+No wrap
+1
+body{
+2
+  text-align: center;
+3
+}
+4
+.ball-container {
+5
+  width:800px;
+6
+  margin-left:auto;
+7
+  margin-right:auto;
+8
+  text-align:center;
+9
+  margin-top:20px;
+10
+}
+11
+#ball {
+12
+  width:45px;
+13
+  height:48px;
+14
+  background-image: url(coin.png);
+15
+}
+16
+​
+17
+.pong {
+18
+  background-color: black;
+19
+  overflow: hidden;
+20
+  width: 800px;
+21
+  height: 450px;
+22
+  margin: 0 auto;
+23
+  position: relative;
+24
+}
+25
+.paddle {
+26
+  height: 40px;
+27
+  width: 10px;
+28
+  background-color: white;
+29
+  top: 10px;
+30
+}
+31
+.paddle-left {
+32
+  position: absolute;
+33
+  left: 10px;
+34
+}
+35
+.paddle-right {
+36
+  position: absolute;
+37
+  right: 10px;
+38
+}
+39
+.ball {
+40
+  position: absolute;
+41
+  width: 10px;
+42
+  height: 10px;
+43
+  background-color: white;
+44
+}
+45
+.half-line {
+@zakwarlord7
+Propose changes
+Commit summary
+Create style.css
+Optional extended description
+Add an optional extended description…
+ 
+Footer
+© 2022 GitHub, Inc.
+Footer navigation
+Terms
+Privacy
+Security
+Status
+Docs
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
 body{
   text-align: center;
 }
