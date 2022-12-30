@@ -38,7 +38,7 @@
     "eslint": "^6.6.0",
     "live-server": "^1.2.1",
     "livereload": "^0.9.1",
-    "mocha": "^6.2.2",
+    "mocha": "^10.2.0",
     "mocha-jsdom": "^2.0.0",
     "puppeteer": "^2.0.0",
     "simple-headless-chrome": "^4.3.10",
