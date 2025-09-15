@@ -108,7 +108,7 @@ class Keyframes {
     if (ruleCache) {
       const computedStyle = { ...getComputedStyle(this.mountedElement) };
       ruleCache.forEach(rule => {
-        this.mountedElement.style[rule] = computedStyle[rule];
+        this.mountedElement.style[rule] = computedStyle[rule] as any;
       });
       this.frozenStyles = [...new Set(this.frozenStyles.concat(ruleCache))];
     }
@@ -117,7 +117,7 @@ class Keyframes {
   unfreeze() {
     if (this.frozenStyles.length) {
       this.frozenStyles.forEach(rule => {
-        this.mountedElement.style[rule] = "";
+        this.mountedElement.style[rule] = "" as any;
       });
       this.frozenStyles = [];
     }
@@ -301,7 +301,7 @@ class Keyframes {
     if (Array.isArray(_animationOptions)) {
       this.queueStore = _animationOptions.reverse().concat(this.queueStore);
     } else {
-      this.queueStore.unshift(_animationOptions);
+      this.queueStore.unshift(_animationOptions as (string | KeyframeAnimationObject));
     }
 
     this.log("queued", animationOptions, currentQueueLength);

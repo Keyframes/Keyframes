@@ -52,7 +52,7 @@ export const spriteSheet = ({
 };
 
 export const playSpriteSheet = (name: string, time: string | 0, loops: IterationCount = 'infinite'): string => {
-    if (loops && loops < 0) {
+    if (typeof loops === 'number' && loops < 0) {
         loops = 'infinite';
     }
 
