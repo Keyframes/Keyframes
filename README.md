@@ -265,8 +265,27 @@ Keyframes.plugin(Pathfinder); // You can also pass an array of plugins for conve
 
 See other plugins that allow for spritesheets & more complex movement paths: https://github.com/Keyframes
 
+## 💖 Support Me
+Hi! I’m krazyjakee 🎮, creator and maintain­er of Keyframes & NodotProject - a suite of open‑source Godot tools (e.g. Nodot, Gedis etc) that empower game developers to build faster and maintain cleaner code.
+
+I’m looking for sponsors to help sustain and grow the project: more dev time, better docs, more features, and deeper community support. Your support means more stable, polished tools used by indie makers and studios alike.
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/krazyjakee)
+
+Every contribution helps maintain and improve this project. And encourage me to make more projects like this!
+
+*This is optional support. The tool remains free and open-source regardless.*
+
+---
+
+**Created with ❤️ for Godot Developers**  
+For contributions, please open issues on GitHub
+
 Changelog
 ---------
+
+**3.0.0**
+* Dependency updates
 
 **2.0.6**
 * Deprecate chain
