@@ -278,7 +278,7 @@ Every contribution helps maintain and improve this project. And encourage me to 
 
 ---
 
-**Created with ❤️ for Godot Developers**  
+**Created with ❤️**  
 For contributions, please open issues on GitHub
 
 Changelog
